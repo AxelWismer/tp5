@@ -1,0 +1,14 @@
+<!--Archivo base de los formularios de actualizacion-->
+{% extends 'montecarlo/base.html' %}
+
+{% block app_content %}
+
+<!-- Elimina el asterisco de los tags    -->
+{% include 'custom/snippets/asterisk_field.html' %}
+
+<form class="form-signin" enctype='multipart/form-data' method="post">{% csrf_token %}
+    {% block form %}
+    {% endblock form %}
+</form>
+
+{% endblock app_content %}

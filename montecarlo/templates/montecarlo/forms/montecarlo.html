@@ -1,0 +1,79 @@
+{% extends 'montecarlo/base_form.html' %}
+{% load crispy_forms_tags %}
+{% block form %}
+<h1 class="text-center">Montecarlo</h1>
+    <hr>
+<div class="text-right">
+    <a class="btn btn-lg btn-outline-primary" href="{% url 'montecarlo:montecarlo' %}">Producto 1</a>
+    <a class="btn btn-lg btn-outline-success" href="{% url 'montecarlo:montecarlo2' %}">Producto 2</a>
+</div>
+<br>
+    <div class="row">
+        <div class="col-3">
+            {{ form.precio_venta|as_crispy_field }}
+        </div>
+        <div class="col-3">
+            {{ form.costo|as_crispy_field }}
+        </div>
+        <div class="col-3">
+            {{ form.vencimiento|as_crispy_field }}
+        </div>
+        <div class="col-3">
+            {{ form.recupero|as_crispy_field }}
+        </div>
+    </div>
+
+    <h3>Reposicion</h3>
+    <div class="row">
+         <div class="col-4">
+            {{ form.tiempo_reposicion|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.cant_a_reponer|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.stock_inicial|as_crispy_field }}
+        </div>
+    </div>
+
+    <h3>Simulacion</h3>
+    <div class="row">
+        <div class="col-4">
+            {{ form.cant_iteraciones|as_crispy_field }}
+        </div>
+        <div class="col-4">
+            {{ form.pseudoaleatorio|as_crispy_field }}
+        </div>
+    </div>
+
+<div class="text-right">
+    <button class="btn btn-lg btn-primary">Calcular</button>
+</div>
+
+{% if ganancia %}
+<hr>
+<hr>
+<div class="text-center">
+    <h3>Ganancias totales: ${{ganancia}}</h3>
+    <h3>Ganancia media por dia: ${{ganancia_media}}</h3>
+</div>
+<hr>
+<div>
+    <!-- Tabla del proceso de montecarlo-->
+    {% include 'montecarlo/snippets/table.html' with tabla=tabla %}
+
+    {% if tabla_fin %}
+    <a class="btn btn-block btn-outline-dark" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <strong>...</strong>
+    </a>
+
+    <div class="collapse.show" id="collapseExample">
+        <br>
+    {% include 'montecarlo/snippets/table.html' with tabla=tabla_fin %}
+    </div>
+    {% endif %}
+</div>
+
+{% endif %}
+
+{% endblock form %}

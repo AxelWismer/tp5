@@ -1,0 +1,41 @@
+<!--Tabla de los numeros generados-->
+<!--var: numbers, max-->
+
+{% load crispy_forms_tags %}
+
+
+<table class="table table-sm text-center">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">Dias</th>
+        <th scope="col">rnd Demanda</th>
+        <th scope="col">Demanda</th>
+        <th scope="col">Reposicion</th>
+        <th scope="col">Disponible</th>
+        <th scope="col">Stock</th>
+        <th scope="col">Venta</th>
+        <th scope="col">Ingreso</th>
+        <th scope="col">Costo</th>
+        <th scope="col">Total</th>
+        <th scope="col">Total Acumulado</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for interv in tabla %}
+    <tr>
+        <th scope="row">{{interv.dia}}</th>
+        <td>{{interv.rnd}}</td>
+        <td>{{interv.demanda}}</td>
+        <td>{{interv.reposicion}}</td>
+        <td>{{interv.disponible}}</td>
+        <td>{{interv.stock}}</td>
+        <td>{{interv.venta}}</td>
+        <td>{{interv.ingreso}}</td>
+        <td>{{interv.costo}}</td>
+        <td>{{interv.total}}</td>
+        <td>{{interv.total_acum}}</td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
