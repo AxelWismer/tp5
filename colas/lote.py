@@ -114,6 +114,8 @@ if __name__ == '__main__':
     # print(lote)
 
 
+
+
     # Ultima sala
     # lote = Lote()
     # SALA_C.add_lote(lote)

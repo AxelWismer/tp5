@@ -86,7 +86,7 @@ class Iteracion:
             lote_proximo = lotes[0]
             for lote in lotes[1:]:
                 if lote.fin_recorrido < lote_proximo.fin_recorrido:
-                    lote_proximo = lote.fin_recorrido
+                    lote_proximo = lote
             return lote_proximo
         return None
 
@@ -100,7 +100,8 @@ class Iteracion:
                 self.evento = "fin_recorrido"
                 self.lote_actual = lote_proximo
                 self.reloj = lote_proximo.fin_recorrido
-        self.evento = "llegada"
+        else:
+            self.evento = "llegada"
 
     # Eventos
     def llegada(self):
@@ -136,8 +137,8 @@ class Iteracion:
             self.guardar_iteracion()
 
         # Se verifica si la sala tenia algun lote en cola y este puede entrar en la sala
-        if sala.puede_entrar_a_sala():
-            self.entrar_a_sala(sala)
+        #if sala.puede_entrar_a_sala():
+        #    self.entrar_a_sala(sala)
 
     def entrar_a_sala(self, sala):
         """Se ingresa un objeto desde la cola hasta sus sala calculando su fin de recorrido"""
@@ -155,9 +156,12 @@ class Iteracion:
             else:
                 self.fin_recorrido_sala()
 
+
+
 if __name__ == '__main__':
     it = Iteracion()
     print(it)
+    it.reloj = it.proxima_llegada
     for i in range(10):
         it.calcular_iteracion(1)
         print(it)
