@@ -86,7 +86,7 @@ class Iteracion:
             lote_proximo = lotes[0]
             for lote in lotes[1:]:
                 if lote.fin_recorrido < lote_proximo.fin_recorrido:
-                    lote_proximo = lote.fin_recorrido
+                    lote_proximo = lote
             return lote_proximo
         return None
 
