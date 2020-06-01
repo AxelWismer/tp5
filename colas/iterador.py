@@ -59,7 +59,7 @@ class Iteracion:
 
     def guardar_iteracion(self):
         "Guarda el estado de una iteracion"
-        if self.desde <= self.numero <= self.hasta or self.numero > self.cantidad_iteraciones - self.ultimas_filas:
+        if self.desde <= self.numero <= self.hasta or self.numero > self.numero - self.ultimas_filas:
             self.tabla.append(self.as_dict)
 
     def set_proxima_llegada(self):
