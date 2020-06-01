@@ -50,15 +50,7 @@ class Sala:
             self.en_cola.append(lote)
 
     def puede_entrar_a_sala(self):
-        if len(self.en_cola) > 0:
-            return self.hay_espacio(self.en_cola[0].visitantes)
-        else:
-            return True
-        #if self.hay_espacio(visitantes) and len(self.en_cola) == 0:
-        #    return True
-        #else:
-        #    return False
-
+        return self.hay_espacio(self.en_cola[0].visitantes)
 
     def entrar_a_sala(self):
         """Mueve un lote de la cola a la sala"""
@@ -69,8 +61,6 @@ class Sala:
     def salir_de_sala(self, lote):
         """Saca un lote de la sala"""
         self.en_sala.remove(lote)
-
-
 
 
 class SalaNormal(Sala):
