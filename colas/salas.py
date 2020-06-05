@@ -37,6 +37,20 @@ class Sala:
         """Verifica si un nuevo lote puede ingresar a la sala"""
         return visitantes <= self.capacidad
 
+    #def hay_cola(self):
+    #    "Verifica si hay cola para ingresar a la sala"
+    #    if len(en_cola) > 0:
+    #        return True
+    #    else:
+    #        return False
+
+    def puede_entrar_a_sala_desde_cola(self):
+        "Verifica si hay cola para ingresar a la sala, y en caso verdadero verifica si el primero de la cola puede ingresar"
+        if len(self.en_cola) > 0:
+            return self.hay_espacio(self.en_cola[0].visitantes)
+        else:
+            return False
+
     def add_lote(self, lote, reloj):
         "Agrega un nuevo lote, ya sea a la sala o a la cola"
         lote.sala_actual = self
@@ -49,8 +63,7 @@ class Sala:
             lote.cola = True
             self.en_cola.append(lote)
 
-    def puede_entrar_a_sala(self):
-        return self.hay_espacio(self.en_cola[0].visitantes)
+
 
     def entrar_a_sala(self):
         """Mueve un lote de la cola a la sala"""
@@ -85,9 +98,9 @@ class SalaUniforme(Sala):
         return self.generador.uniforme_next(a=self.minimo, b=self.maximo)
 
 
-SALA_A = SalaNormal("A", capacidad=40, media=30, desviacion=5)
-SALA_B = SalaNormal("B", capacidad=40, media=25, desviacion=4)
-SALA_C = SalaUniforme("C", capacidad=100, minimo=12, maximo=18)
+SALA_A = SalaNormal("A", capacidad=80, media=30, desviacion=5)
+SALA_B = SalaNormal("B", capacidad=80, media=25, desviacion=4)
+SALA_C = SalaUniforme("C", capacidad=10, minimo=12, maximo=18)
 SALA_D = SalaUniforme("D", capacidad=100, minimo=14, maximo=18)
 
 if __name__ == '__main__':

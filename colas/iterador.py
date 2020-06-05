@@ -1,4 +1,5 @@
 import random
+
 from generador_pseudoaliatorio.generador import Generador
 from colas.lote import Lote
 from colas.salas import SALA_A, SALA_B, SALA_C, SALA_D
@@ -8,6 +9,7 @@ class Iteracion:
         self.tabla = []
         self.generador = Generador(decimals=decimales, random=True)
         self.decimales = decimales
+        self.cantidad_iteraciones = 1
 
         # Inicializacion
         self.numero = 0
@@ -59,7 +61,7 @@ class Iteracion:
 
     def guardar_iteracion(self):
         "Guarda el estado de una iteracion"
-        if self.desde <= self.numero <= self.hasta or self.numero > self.numero - self.ultimas_filas:
+        if self.desde <= self.numero <= self.hasta or self.numero > self.cantidad_iteraciones - self.ultimas_filas:
             self.tabla.append(self.as_dict)
 
     def set_proxima_llegada(self):
@@ -88,7 +90,8 @@ class Iteracion:
                 if lote.fin_recorrido < lote_proximo.fin_recorrido:
                     lote_proximo = lote
             return lote_proximo
-        return None
+        else:
+            return None
 
     def proximo_evento(self):
         lote_proximo = self.proximo_lote()
@@ -100,7 +103,8 @@ class Iteracion:
                 self.evento = "fin_recorrido"
                 self.lote_actual = lote_proximo
                 self.reloj = lote_proximo.fin_recorrido
-        self.evento = "llegada"
+        else:
+            self.evento = "llegada"
 
     # Eventos
     def llegada(self):
@@ -111,10 +115,17 @@ class Iteracion:
         SALA_C.add_lote(self.lote_actual, self.reloj)
         # Se calcula la proxima llegada
         self.set_proxima_llegada()
+        acu = 0
+        for i in range(len(SALA_C.en_cola)):
+            acu += SALA_C.en_cola[i].visitantes
+        if acu > self.maximo_cola:
+            self.maximo_cola = acu
 
     def fin_recorrido_sala(self):
         lote = self.lote_actual
         sala = lote.sala_actual
+
+        lote_en_cola = None
 
         # Verifica si el lote se encuente en la ultima sala del recorrido
         if lote.ultima_sala():
@@ -136,19 +147,27 @@ class Iteracion:
             self.guardar_iteracion()
 
         # Se verifica si la sala tenia algun lote en cola y este puede entrar en la sala
-        if sala.puede_entrar_a_sala():
-            self.entrar_a_sala(sala)
+        for i in range (len(sala.en_cola)):
+            if sala.puede_entrar_a_sala_desde_cola():
+                lote_en_cola = sala.en_cola[0]
+                self.entrar_a_sala_desde_cola(sala, lote_en_cola)
+                sala.en_cola.pop(0)
 
-    def entrar_a_sala(self, sala):
+    def entrar_a_sala_desde_cola(self, sala, lote):
         """Se ingresa un objeto desde la cola hasta sus sala calculando su fin de recorrido"""
         # Esta funcion cuenta como una iteracion adicional en caso de que pueda ingresar un lote a la sala
+        # No se si corresponde sumar una iteracion
         self.numero += 1
-        sala.entrar_a_sala()
-        self.guardar_iteracion()
+        sala.en_sala.append(lote)
+        lote.cola = False
+        lote.set_fin_recorrido(self.reloj)
+        # Tampoco si hace falta guardar
+        # self.guardar_iteracion()
 
     def calcular_iteracion(self, cant_iteraciones):
         """Metodo que realiza el calculo completo tomando los datos de la iteracion anterior"""
         for i in range(cant_iteraciones):
+            self.numero += 1
             self.proximo_evento()
             if self.evento == "llegada":
                 self.llegada()
@@ -158,7 +177,8 @@ class Iteracion:
 if __name__ == '__main__':
     it = Iteracion()
     print(it)
-    for i in range(10):
+    it.reloj = it.proxima_llegada
+    for i in range(100):
         it.calcular_iteracion(1)
         print(it)
 

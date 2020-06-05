@@ -43,7 +43,7 @@ class Lote:
     def estado(self):
         sala = self.sala_actual
         if sala:
-            return f'En sala {sala.nombre}' if not self.cola else f'En sala {sala.nombre}'
+            return f'En sala {sala.nombre}' if not self.cola else f'En cola sala {sala.nombre}'
         return ""
 
     def recorrido_as_str(self):
