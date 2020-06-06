@@ -56,7 +56,7 @@ class Iteracion:
         dic = {
             'numero': self.numero,
             'evento': self.evento,
-            'reloj': self.reloj,
+            'reloj': round(self.reloj, self.decimales),
             'proxima_llegada': self.proxima_llegada,
             # 'lote_actual': self.lote_actual,
             'cantidad_visitas': self.cantidad_visitas,
@@ -86,7 +86,7 @@ class Iteracion:
 
     def set_proxima_llegada(self):
         self.rnd_proxima_llegada = self.generador.exponencial_next(lam=1/5)
-        self.proxima_llegada = self.reloj + self.rnd_proxima_llegada
+        self.proxima_llegada = round(self.reloj + self.rnd_proxima_llegada, self.decimales)
         return self.proxima_llegada
 
     def get_lotes(self):
@@ -167,7 +167,6 @@ class Iteracion:
             lote.proxima_sala()
             # Asigno el lote a la proxima sala
             lote.sala_actual.add_lote(lote, self.reloj)
-            self.guardar_iteracion()
 
         # Se verifica si la sala tenia algun lote en cola y este puede entrar en la sala
         for i in range(len(sala.en_cola)):
@@ -176,7 +175,8 @@ class Iteracion:
                 self.entrar_a_sala_desde_cola(sala, lote_en_cola)
                 sala.en_cola.pop(0)
                 # Guardo la iteracion despues de haber cambiado al lote a su nueva sala
-                self.guardar_iteracion()
+        # Guarda la iteracion con todos los cambios realizados
+        self.guardar_iteracion()
 
     def entrar_a_sala_desde_cola(self, sala, lote):
         """Se ingresa un objeto desde la cola hasta sus sala calculando su fin de recorrido"""
@@ -222,6 +222,11 @@ class Iteracion:
                 if numero in list(linea['lotes'].keys()):
                     matriz[i][j] = linea['lotes'][numero]
                     # print(linea['lotes'][numero])
+
+        # Agrego los lotes a la tabla
+        for i in range(len(tabla)):
+            tabla[i]['lotes_arreglados'] = matriz[i]
+
         return matriz, lotes
 
         # Ver tabla

@@ -20,7 +20,7 @@ class Sala:
     def as_dict(self):
         return {
             'nombre': self.nombre,
-            "col": self.cola,
+            "cola": self.cola,
             "capacidad": self.capacidad,
         }
 

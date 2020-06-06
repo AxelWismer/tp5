@@ -61,7 +61,7 @@ class Lote:
         }
 
     def set_fin_recorrido(self, reloj):
-        self.fin_recorrido = reloj + self.sala_actual.tiempo_recorrido
+        self.fin_recorrido = round(reloj + self.sala_actual.tiempo_recorrido, 4)
 
     def get_recorrido(self, rnd):
         """Calcula el recorrido de un grupo"""
