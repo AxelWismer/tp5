@@ -12,7 +12,7 @@ class Colas(generic.FormView):
         desde = form.cleaned_data['desde']
         hasta = form.cleaned_data['hasta']
         ultimas_filas = form.cleaned_data['ultimas_filas']
-        print(desde, hasta, ultimas_filas)
+
         # Se genera el iterador con los parametros que indican que valores guardar
         it = Iteracion(
             desde=desde,
@@ -36,7 +36,6 @@ class Colas(generic.FormView):
 
         it.limpiar_salas()
 
-        print(tabla)
         context['tabla'], context['num_lotes'] = it.get_matrix(tabla)
         tabla.insert(len(it.tabla), {})
         tabla.insert(len(it.tabla), {})

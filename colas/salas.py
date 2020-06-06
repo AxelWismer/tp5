@@ -103,7 +103,7 @@ class SalaUniforme(Sala):
 
 SALA_A = SalaNormal("A", capacidad=80, media=30, desviacion=5)
 SALA_B = SalaNormal("B", capacidad=80, media=25, desviacion=4)
-SALA_C = SalaUniforme("C", capacidad=10, minimo=12, maximo=18)
+SALA_C = SalaUniforme("C", capacidad=100, minimo=12, maximo=18)
 SALA_D = SalaUniforme("D", capacidad=100, minimo=14, maximo=18)
 
 if __name__ == '__main__':
