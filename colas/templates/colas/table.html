@@ -1,0 +1,56 @@
+<!--Tabla de los numeros generados-->
+<!--var: numbers, max-->
+
+{% load crispy_forms_tags %}
+
+<style>
+    .tableFixHead          { overflow-y: 20px; height: 600px; }
+    .tableFixHead thead th { position: sticky; top: 0px; }
+
+    .tableFixHead,
+    .tableFixHead td {
+    box-shadow: inset 1px -1px #D3D3D3;
+    }
+    .tableFixHead th {
+    box-shadow: inset 1px 1px #000, 0 1px #000;
+    }
+
+</style>
+
+<table class="table m-auto table-sm table-responsive text-center tableFixHead">
+    <thead class="thead-dark m-auto">
+    <tr>
+        <th colspan="3">Evento</th>
+        <th colspan="1">LLegada</th>
+        <th colspan="2">Resultados</th>
+        <th colspan="4">Salas</th>
+        <th colspan="{{lotes|length}}">Lotes</th>
+    </tr>
+    <tr>
+        <th scope="col">numero</th>
+        <th scope="col">tipo</th>
+        <th scope="col">reloj</th>
+        <th scope="col">proxima llegada</th>
+        <th scope="col">cantidad de visitas</th>
+        <th scope="col">maxima cola</th>
+        <th scope="col">Sala A</th>
+        <th scope="col">Sala B</th>
+        <th scope="col">Sala C</th>
+        <th scope="col">Sala D</th>
+        <!-- Lotes -->
+        {% for num in num_lotes %}
+
+        <th scope="col">{{num}}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for linea in tabla %}
+    <tr>
+        <td>{{linea.numero}}</td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+

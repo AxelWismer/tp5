@@ -63,8 +63,6 @@ class Sala:
             lote.cola = True
             self.en_cola.append(lote)
 
-
-
     def entrar_a_sala(self):
         """Mueve un lote de la cola a la sala"""
         if self.puede_entrar_a_sala():
@@ -74,6 +72,11 @@ class Sala:
     def salir_de_sala(self, lote):
         """Saca un lote de la sala"""
         self.en_sala.remove(lote)
+
+    def limpiar_sala(self):
+        """Limpia las salas para una nueva simulacion"""
+        self.en_sala = []
+        self.en_cola = []
 
 
 class SalaNormal(Sala):

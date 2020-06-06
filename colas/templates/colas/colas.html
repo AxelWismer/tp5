@@ -1,0 +1,30 @@
+{% extends 'colas/base_form.html' %}
+{% load crispy_forms_tags %}
+{% block form %}
+<h1 class="text-center">Colas, ej: 60</h1>
+<hr>
+<br>
+<div class="row">
+    <div class="col-3">
+        {{ form.desde|as_crispy_field }}
+    </div>
+    <div class="col-3">
+        {{ form.hasta|as_crispy_field }}
+    </div>
+    <div class="col-3">
+        {{ form.ultimas_filas|as_crispy_field }}
+    </div>
+    <div class="col-3">
+        {{ form.tiempo|as_crispy_field }}
+    </div>
+</div>
+
+<div class="text-right">
+    <button class="btn btn-lg btn-primary">Calcular</button>
+</div>
+{% if tabla %}
+<hr>
+{% include 'colas/table.html' with tabla=tabla lotes=lotes %}
+{% endif %}
+
+{% endblock form %}

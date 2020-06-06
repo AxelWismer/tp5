@@ -21,8 +21,8 @@ from django.conf import settings
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
-                  path('', generic.TemplateView.as_view(template_name='montecarlo/index.html'), name='index'),
-                  path('montecarlo/', include('montecarlo.urls')),
+                  path('', generic.TemplateView.as_view(template_name='colas/index.html'), name='index'),
+                  path('colas/', include('colas.urls')),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

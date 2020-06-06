@@ -33,6 +33,8 @@ class Lote:
         self.sala_actual = None
         self.cola = False
         self.visitantes = generador.poisson_next(3)
+        if self.visitantes == 0:
+            self.visitantes += 1
         self.recorrido = self.get_recorrido(generador.rnd())
         self.fin_recorrido = ''
 
@@ -78,6 +80,10 @@ class Lote:
             self.sala_actual = self.recorrido[self.recorrido.index(self.sala_actual) + 1]
         else:
             raise Exception("No existe proxima sala")
+
+    @classmethod
+    def resetrar_lote(cls):
+        cls.nro = 0
 
 if __name__ == '__main__':
     x = 0

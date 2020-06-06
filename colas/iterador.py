@@ -7,6 +7,8 @@ from colas.salas import SALA_A, SALA_B, SALA_C, SALA_D
 class Iteracion:
     def __init__(self, desde=0, hasta=30, ultimas_filas=10, decimales=4):
         self.tabla = []
+        self.tabla_final = [None] * ultimas_filas
+        self.pos_ultimo_elemento = 0
         self.generador = Generador(decimals=decimales, random=True)
         self.decimales = decimales
         self.cantidad_iteraciones = 1
@@ -34,8 +36,18 @@ class Iteracion:
         dic.pop('lotes')
         salas = self.as_dict['salas']
         lotes = self.as_dict['lotes']
-        lotes = '\t' + '\n\t'.join([str(lote) for lote in lotes])
+        lotes = '\t' + '\n\t'.join([lote for lote in lotes])
         return f"{dic}\n{salas}\n{lotes}\n"
+
+    def print_tabla(self, tabla):
+        print("Tabla")
+        for linea in tabla:
+            dic = linea.copy()
+            salas = dic.pop('salas')
+            lotes = dic.pop('lotes')
+            lotes = '\t' + '\n\t'.join([str(lote) for lote in lotes.items()])
+            print(f"{dic}\n{salas}\n{lotes}")
+            print("-" * 20)
 
     # Devuelve un diccionario con los valores actuales del objeto
     @property
@@ -55,14 +67,22 @@ class Iteracion:
                 'sala_c': SALA_C.as_dict(),
                 'sala_d': SALA_D.as_dict(),
             },
-            'lotes': [lote.as_dict() for lote in self.get_lotes()]
+            'lotes': {lote.numero : lote.as_dict() for lote in self.get_lotes()}
         }
         return dic
 
     def guardar_iteracion(self):
         "Guarda el estado de una iteracion"
-        if self.desde <= self.numero <= self.hasta or self.numero > self.cantidad_iteraciones - self.ultimas_filas:
+        if self.desde <= self.numero <= self.hasta:
             self.tabla.append(self.as_dict)
+        else:
+            self.tabla_final[self.pos_ultimo_elemento] = self.as_dict
+            # Actualizo el proximo elemnto a reemplazar cuidando de que se mantenga en el rango de las ultimas filas
+            self.pos_ultimo_elemento = (self.pos_ultimo_elemento + 1) % self.ultimas_filas
+
+    def get_tabla_final(self):
+        "Devuelve las ultimas iteraciones ordenadas"
+        return self.tabla_final[self.pos_ultimo_elemento:] + self.tabla[:self.pos_ultimo_elemento]
 
     def set_proxima_llegada(self):
         self.rnd_proxima_llegada = self.generador.exponencial_next(lam=1/5)
@@ -120,6 +140,7 @@ class Iteracion:
             acu += SALA_C.en_cola[i].visitantes
         if acu > self.maximo_cola:
             self.maximo_cola = acu
+        self.guardar_iteracion()
 
     def fin_recorrido_sala(self):
         lote = self.lote_actual
@@ -134,6 +155,8 @@ class Iteracion:
             lote.fin_recorrido = None
             # Guardo la iteracion antes de destruir el lote
             self.guardar_iteracion()
+            # Actualizo la cantidad total de visitas
+            self.cantidad_visitas += lote.visitantes
             # Elimino el lote anterior
             lote.sala_actual.salir_de_sala(lote)
         # El lote no se encuentra en la ultima sala
@@ -147,11 +170,13 @@ class Iteracion:
             self.guardar_iteracion()
 
         # Se verifica si la sala tenia algun lote en cola y este puede entrar en la sala
-        for i in range (len(sala.en_cola)):
+        for i in range(len(sala.en_cola)):
             if sala.puede_entrar_a_sala_desde_cola():
                 lote_en_cola = sala.en_cola[0]
                 self.entrar_a_sala_desde_cola(sala, lote_en_cola)
                 sala.en_cola.pop(0)
+                # Guardo la iteracion despues de haber cambiado al lote a su nueva sala
+                self.guardar_iteracion()
 
     def entrar_a_sala_desde_cola(self, sala, lote):
         """Se ingresa un objeto desde la cola hasta sus sala calculando su fin de recorrido"""
@@ -161,12 +186,10 @@ class Iteracion:
         sala.en_sala.append(lote)
         lote.cola = False
         lote.set_fin_recorrido(self.reloj)
-        # Tampoco si hace falta guardar
-        # self.guardar_iteracion()
 
-    def calcular_iteracion(self, cant_iteraciones):
+    def calcular_iteracion(self, tiempo):
         """Metodo que realiza el calculo completo tomando los datos de la iteracion anterior"""
-        for i in range(cant_iteraciones):
+        while self.reloj < tiempo:
             self.numero += 1
             self.proximo_evento()
             if self.evento == "llegada":
@@ -174,11 +197,63 @@ class Iteracion:
             else:
                 self.fin_recorrido_sala()
 
+    # Mostrar los lotes de un intervalo en una matriz
+    def get_matrix(self, tabla):
+        lotes = set()
+        # Obtengo los numeros de todos los lotes en todas las iteraciones y elimino los duplicados
+        for linea in tabla:
+            lotes.update(list(linea["lotes"].keys()))
+
+        lotes = list(lotes)
+        # Creo una matriz llena de diccionarios vacios
+        # matriz = [[None] * numero_columnas] * numero_filas
+        # {'numero': '', 'estado': '', 'visitantes': '', 'recorrido': '' , 'fin_recorrido': ''}
+        matriz = [[{'numero': '', 'estado': '', 'visitantes': '', 'recorrido': '' , 'fin_recorrido': ''}] * len(lotes) for i in range(len(tabla))]
+
+        for i in range(len(tabla)):
+            linea = tabla[i]
+            # print(i, list)
+            for j in range(len(lotes)):
+                numero = lotes[j]
+                # print("Lineas:", list(linea['lotes'].keys()))
+                # print("Numeros:", numero)
+                # print("en: ", numero in list(linea['lotes'].keys()))
+                # Si el lote existe en esta linea
+                if numero in list(linea['lotes'].keys()):
+                    matriz[i][j] = linea['lotes'][numero]
+                    # print(linea['lotes'][numero])
+        return matriz, lotes
+
+        # Ver tabla
+        # for i in range(len(tabla)):
+        #     for j in range(len(lotes)):
+        #         print(matriz[i][j], end="\n\t")
+        #     print()
+        #     print("-" * 20)
+        #
+        # Ver que matrices se registraron en cada fila
+        # for i in range(len(tabla)):
+        #     for j in range(len(lotes)):
+        #         print(matriz[i][j]["numero"], end=" | ")
+        #     print()
+        #     print("-" * 20)
+
+
+    def limpiar_salas(self):
+        """Limpia todas las salas para una nueva simulacion"""
+        SALA_A.limpiar_sala()
+        SALA_B.limpiar_sala()
+        SALA_C.limpiar_sala()
+        SALA_D.limpiar_sala()
+        Lote.resetrar_lote()
+
+
 if __name__ == '__main__':
-    it = Iteracion()
+    it = Iteracion(desde=0, hasta=30)
     print(it)
     it.reloj = it.proxima_llegada
-    for i in range(100):
-        it.calcular_iteracion(1)
-        print(it)
-
+    it.calcular_iteracion(1000)
+    it.print_tabla(it.tabla)
+    # it.print_tabla(it.tabla_final)
+    print(len(it.tabla))
+    it.get_matrix(tabla=it.tabla)
