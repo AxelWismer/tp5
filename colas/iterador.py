@@ -7,7 +7,7 @@ from colas.salas import SALA_A, SALA_B, SALA_C, SALA_D
 class Iteracion:
     def __init__(self, desde=0, hasta=30, ultimas_filas=10, decimales=4):
         self.tabla = []
-        self.tabla_final = [None] * ultimas_filas
+        self.tabla_final = []
         self.pos_ultimo_elemento = 0
         self.generador = Generador(decimals=decimales, random=True)
         self.decimales = decimales
@@ -76,9 +76,11 @@ class Iteracion:
         if self.desde <= self.numero <= self.hasta:
             self.tabla.append(self.as_dict)
         else:
-            self.tabla_final[self.pos_ultimo_elemento] = self.as_dict
+            self.tabla_final.append(self.as_dict)
+            if len(self.tabla_final) > 10:
+                self.tabla_final.pop(0)
             # Actualizo el proximo elemnto a reemplazar cuidando de que se mantenga en el rango de las ultimas filas
-            self.pos_ultimo_elemento = int((self.pos_ultimo_elemento + 1) % self.ultimas_filas)
+            # self.pos_ultimo_elemento = (self.pos_ultimo_elemento + 1) % self.ultimas_filas
 
     def ordenar_tabla_final(self):
         "Ordena la tabla final"

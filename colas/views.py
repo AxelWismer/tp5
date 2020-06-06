@@ -12,6 +12,7 @@ class Colas(generic.FormView):
         desde = form.cleaned_data['desde']
         hasta = form.cleaned_data['hasta']
         ultimas_filas = form.cleaned_data['ultimas_filas']
+        print(desde, hasta, ultimas_filas)
         # Se genera el iterador con los parametros que indican que valores guardar
         it = Iteracion(
             desde=desde,
@@ -21,7 +22,7 @@ class Colas(generic.FormView):
         # Se realizan las simulaciones requeridas
 
         it.calcular_iteracion(tiempo=int(form.cleaned_data['tiempo']))
-        print(it.print_tabla(it.tabla))
+        # print(it.print_tabla(it.tabla))
         # Mostrar tabla
         # Divido la tabla en sus 2 partes
         context = {
@@ -29,11 +30,15 @@ class Colas(generic.FormView):
             # 'tabla_final': it.get_tabla_final(),
             # 'lotes_final': it.get_matrix(it.get_tabla_final()),
             'form': form}
+
+        # it.ordenar_tabla_final()
+        tabla = it.tabla + it.tabla_final
+
         it.limpiar_salas()
 
-        it.ordenar_tabla_final()
-        tabla = it.tabla + it.tabla_final
+        print(tabla)
         context['tabla'], context['num_lotes'] = it.get_matrix(tabla)
+        tabla.insert(len(it.tabla), {})
         tabla.insert(len(it.tabla), {})
 
 
