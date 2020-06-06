@@ -78,11 +78,11 @@ class Iteracion:
         else:
             self.tabla_final[self.pos_ultimo_elemento] = self.as_dict
             # Actualizo el proximo elemnto a reemplazar cuidando de que se mantenga en el rango de las ultimas filas
-            self.pos_ultimo_elemento = (self.pos_ultimo_elemento + 1) % self.ultimas_filas
+            self.pos_ultimo_elemento = int((self.pos_ultimo_elemento + 1) % self.ultimas_filas)
 
-    def get_tabla_final(self):
-        "Devuelve las ultimas iteraciones ordenadas"
-        return self.tabla_final[self.pos_ultimo_elemento:] + self.tabla[:self.pos_ultimo_elemento]
+    def ordenar_tabla_final(self):
+        "Ordena la tabla final"
+        self.tabla_final = self.tabla_final[self.pos_ultimo_elemento:] + self.tabla_final[:self.pos_ultimo_elemento]
 
     def set_proxima_llegada(self):
         self.rnd_proxima_llegada = self.generador.exponencial_next(lam=1/5)
@@ -153,12 +153,23 @@ class Iteracion:
            # Acciones si un lote llega al final del recorrido
             self.cantidad_visitas += lote.visitantes
             lote.fin_recorrido = None
-            # Guardo la iteracion antes de destruir el lote
-            self.guardar_iteracion()
             # Actualizo la cantidad total de visitas
             self.cantidad_visitas += lote.visitantes
+
+            # Se verifica si la sala tenia algun lote en cola y este puede entrar en la sala
+            for i in range(len(sala.en_cola)):
+                if sala.puede_entrar_a_sala_desde_cola():
+                    lote_en_cola = sala.en_cola[0]
+                    self.entrar_a_sala_desde_cola(sala, lote_en_cola)
+                    sala.en_cola.pop(0)
+                    # Guardo la iteracion despues de haber cambiado al lote a su nueva sala
+
+            # Guarda la iteracion con todos los cambios realizados
+            self.guardar_iteracion()
+
             # Elimino el lote anterior
             lote.sala_actual.salir_de_sala(lote)
+
         # El lote no se encuentra en la ultima sala
         else:
             # Me salgo de la sala actual
@@ -168,21 +179,20 @@ class Iteracion:
             # Asigno el lote a la proxima sala
             lote.sala_actual.add_lote(lote, self.reloj)
 
-        # Se verifica si la sala tenia algun lote en cola y este puede entrar en la sala
-        for i in range(len(sala.en_cola)):
-            if sala.puede_entrar_a_sala_desde_cola():
-                lote_en_cola = sala.en_cola[0]
-                self.entrar_a_sala_desde_cola(sala, lote_en_cola)
-                sala.en_cola.pop(0)
-                # Guardo la iteracion despues de haber cambiado al lote a su nueva sala
-        # Guarda la iteracion con todos los cambios realizados
-        self.guardar_iteracion()
+            # Se verifica si la sala tenia algun lote en cola y este puede entrar en la sala
+            for i in range(len(sala.en_cola)):
+                if sala.puede_entrar_a_sala_desde_cola():
+                    lote_en_cola = sala.en_cola[0]
+                    self.entrar_a_sala_desde_cola(sala, lote_en_cola)
+                    sala.en_cola.pop(0)
+                    # Guardo la iteracion despues de haber cambiado al lote a su nueva sala
+                # Guarda la iteracion con todos los cambios realizados
+            self.guardar_iteracion()
 
     def entrar_a_sala_desde_cola(self, sala, lote):
         """Se ingresa un objeto desde la cola hasta sus sala calculando su fin de recorrido"""
         # Esta funcion cuenta como una iteracion adicional en caso de que pueda ingresar un lote a la sala
         # No se si corresponde sumar una iteracion
-        self.numero += 1
         sala.en_sala.append(lote)
         lote.cola = False
         lote.set_fin_recorrido(self.reloj)
@@ -227,7 +237,7 @@ class Iteracion:
         for i in range(len(tabla)):
             tabla[i]['lotes_arreglados'] = matriz[i]
 
-        return matriz, lotes
+        return tabla, lotes
 
         # Ver tabla
         # for i in range(len(tabla)):

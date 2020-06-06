@@ -31,6 +31,10 @@ class Colas(generic.FormView):
             'form': form}
         it.limpiar_salas()
 
-        context['lotes'], context['num_lotes'] = it.get_matrix(it.tabla)
+        it.ordenar_tabla_final()
+        tabla = it.tabla + it.tabla_final
+        context['tabla'], context['num_lotes'] = it.get_matrix(tabla)
+        tabla.insert(len(it.tabla), {})
+
 
         return render(self.request, template_name=self.template_name, context=context)
