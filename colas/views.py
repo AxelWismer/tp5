@@ -25,8 +25,25 @@ class Colas(generic.FormView):
         # print(it.print_tabla(it.tabla))
         # Mostrar tabla
         # Divido la tabla en sus 2 partes
+        visitantesA , visitantesB, visitantesC, visitantesD = it.get_visitantes_por_sala()
+        colaA, colaB, colaC, colaD = it.get_numero_lotes_encolados()
+        lotesA, lotesB, lotesC, lotesD = it.get_numero_lotes()
+        tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_medio_recorrido()
+        pctjeA,pctjeB,pctjeC,pctjeD = it.calcular_porcentaje_lotes_cola()
         context = {
             'tabla': it.tabla,
+            'pctjeA': pctjeA,
+            'pctjeB': pctjeB,
+            'pctjeC': pctjeC,
+            'pctjeD': pctjeD,
+            'tiempoA': tiempoA,
+            'tiempoB': tiempoB,
+            'tiempoC': tiempoC,
+            'tiempoD': tiempoD,
+            'visitantesA': visitantesA,
+            'visitantesB': visitantesB,
+            'visitantesC': visitantesC,
+            'visitantesD': visitantesD,
             # 'tabla_final': it.get_tabla_final(),
             # 'lotes_final': it.get_matrix(it.get_tabla_final()),
             'form': form}

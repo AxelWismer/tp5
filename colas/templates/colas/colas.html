@@ -18,11 +18,44 @@
         {{ form.tiempo|as_crispy_field }}
     </div>
 </div>
-
 <div class="text-right">
     <button class="btn btn-lg btn-primary">Calcular</button>
 </div>
 {% if tabla %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Estadisticas</th>
+            <th scope="col">Sala A</th>
+            <th scope="col">Sala B</th>
+            <th scope="col">Sala C</th>
+            <th scope="col">Sala D</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <th scope="row">Cantidad de visitantes</th>
+          <td>{{ visitantesA }}</td>
+            <td>{{ visitantesB }}</td>
+            <td>{{ visitantesC }}</td>
+            <td>{{ visitantesD }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Porcentaje en cola</th>
+            <td>{{ pctjeA }}</td>
+            <td>{{ pctjeB }}</td>
+            <td>{{ pctjeC }}</td>
+            <td>{{ pctjeD }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Tiempo de recorrido medio</th>
+            <td>{{ tiempoA }}</td>
+            <td>{{ tiempoB }}</td>
+            <td>{{ tiempoC }}</td>
+            <td>{{ tiempoD }}</td>
+        </tr>
+  </tbody>
+</table>
 <hr>
 {% include 'colas/table.html' with tabla=tabla lotes=lotes %}
 {% endif %}

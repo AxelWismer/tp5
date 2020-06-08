@@ -9,6 +9,12 @@ class Sala:
         self.generador = Generador(decimals=decimales, random=True)
         self.en_sala = []
         self.en_cola = []
+        #Estadisticas extra
+        self.contador_cola = 0
+        #El lote ya tiene la propiedad de numero, pero esto es para contar lotes por sala
+        self.contador_lotes = 0
+        self.tiempo_recorrido_medio = 0
+        self.contador_visitantes = 0
 
     def __str__(self):
         return str(self.as_dict)
@@ -59,9 +65,13 @@ class Sala:
             self.en_sala.append(lote)
             # Como el lote entra a la sala se calcula su fin de recorrido utilizando el tiempo actual
             lote.set_fin_recorrido(reloj)
+            self.contador_lotes += 1
+            self.tiempo_recorrido_medio += lote.fin_recorrido - reloj
+            self.contador_visitantes += lote.visitantes
         else:
             lote.cola = True
             self.en_cola.append(lote)
+            self.contador_cola += 1
 
     def entrar_a_sala(self):
         """Mueve un lote de la cola a la sala"""

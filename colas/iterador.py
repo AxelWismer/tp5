@@ -103,6 +103,41 @@ class Iteracion:
         """Devuelve una lista con los lotes en sala de todas las colas"""
         return SALA_A.en_cola + SALA_B.en_cola + SALA_C.en_cola + SALA_D.en_cola
 
+    #ESTADISTICAS
+    def get_numero_lotes_encolados(self):
+        colaA = SALA_A.contador_cola
+        colaB = SALA_B.contador_cola
+        colaC = SALA_C.contador_cola
+        colaD = SALA_D.contador_cola
+        return colaA, colaB, colaC, colaD
+
+    def get_numero_lotes(self):
+        lotesA = SALA_A.contador_lotes
+        lotesB = SALA_B.contador_lotes
+        lotesC = SALA_C.contador_lotes
+        lotesD = SALA_D.contador_lotes
+        return lotesA, lotesB, lotesC, lotesD
+
+    def calcular_porcentaje_lotes_cola(self):
+        lotesA, lotesB, lotesC, lotesD = self.get_numero_lotes()
+        colasA, colasB, colasC, colasD = self.get_numero_lotes_encolados()
+        return colasA/lotesA, colasB/lotesB, colasC/lotesC, colasD/lotesD
+
+    def get_tiempo_medio_recorrido(self):
+        tiempoA = SALA_A.tiempo_recorrido_medio
+        tiempoB = SALA_B.tiempo_recorrido_medio
+        tiempoC = SALA_C.tiempo_recorrido_medio
+        tiempoD = SALA_D.tiempo_recorrido_medio
+        return tiempoA, tiempoB, tiempoC, tiempoD
+
+    def get_visitantes_por_sala(self):
+        visitantesA= SALA_A.contador_visitantes
+        visitantesB = SALA_B.contador_visitantes
+        visitantesC = SALA_C.contador_visitantes
+        visitantesD = SALA_D.contador_visitantes
+        return visitantesA, visitantesB, visitantesC, visitantesD
+
+
     def proximo_lote(self):
         """Devuelve el proximo lote que finalizara el recorrido"""
         lotes = self.get_lotes_en_sala()
@@ -153,7 +188,6 @@ class Iteracion:
         # Verifica si el lote se encuente en la ultima sala del recorrido
         if lote.ultima_sala():
            # Acciones si un lote llega al final del recorrido
-            self.cantidad_visitas += lote.visitantes
             lote.fin_recorrido = None
             # Actualizo la cantidad total de visitas
             self.cantidad_visitas += lote.visitantes
@@ -274,3 +308,14 @@ if __name__ == '__main__':
     # it.print_tabla(it.tabla_final)
     print(len(it.tabla))
     it.get_matrix(tabla=it.tabla)
+    #Estadisticas
+    lotesA, lotesB, lotesC, lotesD = it.get_numero_lotes()
+    lotesTotal = lotesA + lotesB + lotesC + lotesD
+    colasA, colasB, colasC, colasD = it.get_numero_lotes_encolados()
+    colasTotal = colasA + colasB + colasC + colasD
+    print("Porcentaje de lotes en cola por sala", "A:", colasA/lotesA, "B:", colasB/lotesB, "C:", colasC/lotesC, "D:", colasD/lotesD)
+    tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_medio_recorrido()
+    print("Tiempo de recorrido medio en cada sala", "A", tiempoA/lotesA, "B", tiempoB/lotesB, "C", tiempoC/lotesC, "D", tiempoD/lotesD)
+    visitantesA, visitantesB, visitantesC, visitantesD = it.get_visitantes_por_sala()
+    print("Visitantes por sala", "A", visitantesA, "B", visitantesB, "C", visitantesC, "D", visitantesD)
+    print((it.calcular_porcentaje_lotes_cola()))
