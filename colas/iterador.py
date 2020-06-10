@@ -118,17 +118,94 @@ class Iteracion:
         lotesD = SALA_D.contador_lotes
         return lotesA, lotesB, lotesC, lotesD
 
+    def get_numero_lotes_sala(self):
+        lotesA_sala = SALA_A.contador_sala
+        lotesB_sala = SALA_B.contador_sala
+        lotesC_sala = SALA_C.contador_sala
+        lotesD_sala = SALA_D.contador_sala
+        return lotesA_sala, lotesB_sala, lotesC_sala, lotesD_sala
+
     def calcular_porcentaje_lotes_cola(self):
         lotesA, lotesB, lotesC, lotesD = self.get_numero_lotes()
         colasA, colasB, colasC, colasD = self.get_numero_lotes_encolados()
-        return colasA/lotesA, colasB/lotesB, colasC/lotesC, colasD/lotesD
+
+        if lotesA == 0:
+            porcentajeA = 0
+        else:
+            porcentajeA = (colasA * 100)/lotesA
+
+        if lotesB == 0:
+            porcentajeB = 0
+        else:
+            porcentajeB = (colasB * 100)/lotesB
+
+        if lotesC == 0:
+            porcentajeC = 0
+        else:
+            porcentajeC = (colasC*100)/lotesC
+
+        if lotesD == 0:
+            porcentajeD = 0
+        else:
+            porcentajeD = (colasA * 100)/lotesD
+
+        return porcentajeA, porcentajeB, porcentajeC, porcentajeD
 
     def get_tiempo_medio_recorrido(self):
         tiempoA = SALA_A.tiempo_recorrido_medio
         tiempoB = SALA_B.tiempo_recorrido_medio
         tiempoC = SALA_C.tiempo_recorrido_medio
         tiempoD = SALA_D.tiempo_recorrido_medio
-        return tiempoA, tiempoB, tiempoC, tiempoD
+
+        if SALA_A.contador_lotes == 0:
+            mediaA = 0
+        else:
+            mediaA = tiempoA/SALA_A.contador_sala
+
+        if SALA_B.contador_lotes == 0:
+            mediaB = 0
+        else:
+            mediaB = tiempoB/SALA_B.contador_sala
+
+        if SALA_C.contador_lotes == 0:
+            mediaC = 0
+        else:
+            mediaC = tiempoC/SALA_C.contador_sala
+
+        if SALA_D.contador_lotes == 0:
+            mediaD = 0
+        else:
+            mediaD = tiempoD/SALA_D.contador_sala
+
+        return mediaA, mediaB, mediaC, mediaD
+
+    def get_tiempo_espera_cola(self):
+        tiempoA = SALA_A.tiempo_espera_medio
+        tiempoB = SALA_B.tiempo_espera_medio
+        tiempoC = SALA_C.tiempo_espera_medio
+        tiempoD = SALA_D.tiempo_espera_medio
+
+        if SALA_A.contador_cola == 0:
+            mediaA = 0
+        else:
+            mediaA = tiempoA / SALA_A.contador_cola
+
+        if SALA_B.contador_cola == 0:
+            mediaB = 0
+        else:
+            mediaB = tiempoB / SALA_B.contador_cola
+
+        if SALA_C.contador_cola == 0:
+            mediaC = 0
+        else:
+            mediaC = tiempoC / SALA_C.contador_cola
+
+        if SALA_D.contador_cola == 0:
+            mediaD = 0
+        else:
+            mediaD = tiempoD / SALA_D.contador_cola
+
+        return mediaA, mediaB, mediaC, mediaD
 
     def get_visitantes_por_sala(self):
         visitantesA= SALA_A.contador_visitantes
@@ -303,19 +380,20 @@ if __name__ == '__main__':
     it = Iteracion(desde=0, hasta=30)
     print(it)
     it.reloj = it.proxima_llegada
-    it.calcular_iteracion(1000)
+    it.calcular_iteracion(60)
     it.print_tabla(it.tabla)
     # it.print_tabla(it.tabla_final)
     print(len(it.tabla))
     it.get_matrix(tabla=it.tabla)
     #Estadisticas
-    lotesA, lotesB, lotesC, lotesD = it.get_numero_lotes()
-    lotesTotal = lotesA + lotesB + lotesC + lotesD
+    #lotesA, lotesB, lotesC, lotesD = it.get_numero_lotes()
+    #lotesTotal = lotesA + lotesB + lotesC + lotesD
     colasA, colasB, colasC, colasD = it.get_numero_lotes_encolados()
     colasTotal = colasA + colasB + colasC + colasD
-    print("Porcentaje de lotes en cola por sala", "A:", colasA/lotesA, "B:", colasB/lotesB, "C:", colasC/lotesC, "D:", colasD/lotesD)
-    tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_medio_recorrido()
-    print("Tiempo de recorrido medio en cada sala", "A", tiempoA/lotesA, "B", tiempoB/lotesB, "C", tiempoC/lotesC, "D", tiempoD/lotesD)
+    #print("Porcentaje de lotes en cola por sala", "A:", colasA/lotesA, "B:", colasB/lotesB, "C:", colasC/lotesC, "D:", colasD/lotesD)
+    #tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_medio_recorrido()
+    #print("Tiempo de recorrido medio en cada sala", "A", tiempoA/lotesA, "B", tiempoB/lotesB, "C", tiempoC/lotesC, "D", tiempoD/lotesD)
     visitantesA, visitantesB, visitantesC, visitantesD = it.get_visitantes_por_sala()
-    print("Visitantes por sala", "A", visitantesA, "B", visitantesB, "C", visitantesC, "D", visitantesD)
-    print((it.calcular_porcentaje_lotes_cola()))
+    #print("Visitantes por sala", "A", visitantesA, "B", visitantesB, "C", visitantesC, "D", visitantesD)
+    tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_espera_cola()
+    print("Tiempo de espera medio en cada sala", "A", tiempoA, "B", tiempoB, "C", tiempoC, "D", tiempoD)

@@ -37,6 +37,7 @@ class Lote:
             self.visitantes += 1
         self.recorrido = self.get_recorrido(generador.rnd())
         self.fin_recorrido = ''
+        self.tiempo_espera_cola = 0
 
     def __str__(self):
         return str(self.as_dict()) + '\n'

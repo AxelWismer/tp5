@@ -28,7 +28,8 @@ class Colas(generic.FormView):
         visitantesA , visitantesB, visitantesC, visitantesD = it.get_visitantes_por_sala()
         colaA, colaB, colaC, colaD = it.get_numero_lotes_encolados()
         lotesA, lotesB, lotesC, lotesD = it.get_numero_lotes()
-        tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_medio_recorrido()
+        #tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_medio_recorrido()
+        tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_espera_cola()
         pctjeA,pctjeB,pctjeC,pctjeD = it.calcular_porcentaje_lotes_cola()
         context = {
             'tabla': it.tabla,
