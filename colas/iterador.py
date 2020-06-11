@@ -132,22 +132,22 @@ class Iteracion:
         if lotesA == 0:
             porcentajeA = 0
         else:
-            porcentajeA = (colasA * 100)/lotesA
+            porcentajeA = self.generador.truncate((colasA * 100)/lotesA, 2)
 
         if lotesB == 0:
             porcentajeB = 0
         else:
-            porcentajeB = (colasB * 100)/lotesB
+            porcentajeB = self.generador.truncate((colasB * 100)/lotesB, 2)
 
         if lotesC == 0:
             porcentajeC = 0
         else:
-            porcentajeC = (colasC*100)/lotesC
+            porcentajeC = self.generador.truncate((colasC*100)/lotesC, 2)
 
         if lotesD == 0:
             porcentajeD = 0
         else:
-            porcentajeD = (colasA * 100)/lotesD
+            porcentajeD = self.generador.truncate((colasD * 100)/lotesD, 2)
 
         return porcentajeA, porcentajeB, porcentajeC, porcentajeD
 
@@ -185,30 +185,30 @@ class Iteracion:
         tiempoC = SALA_C.tiempo_espera_medio
         tiempoD = SALA_D.tiempo_espera_medio
 
-        if SALA_A.contador_cola == 0:
+        if SALA_A.contador_cola_a_sala == 0:
             mediaA = 0
         else:
-            mediaA = tiempoA / SALA_A.contador_cola
+            mediaA = self.generador.truncate(tiempoA / SALA_A.contador_cola_a_sala, 2)
 
-        if SALA_B.contador_cola == 0:
+        if SALA_B.contador_cola_a_sala == 0:
             mediaB = 0
         else:
-            mediaB = tiempoB / SALA_B.contador_cola
+            mediaB = self.generador.truncate(tiempoB / SALA_B.contador_cola_a_sala, 2)
 
-        if SALA_C.contador_cola == 0:
+        if SALA_C.contador_cola_a_sala == 0:
             mediaC = 0
         else:
-            mediaC = tiempoC / SALA_C.contador_cola
+            mediaC = self.generador.truncate(tiempoC / SALA_C.contador_cola_a_sala, 2)
 
-        if SALA_D.contador_cola == 0:
+        if SALA_D.contador_cola_a_sala == 0:
             mediaD = 0
         else:
-            mediaD = tiempoD / SALA_D.contador_cola
+            mediaD = self.generador.truncate(tiempoD / SALA_D.contador_cola_a_sala, 2)
 
         return mediaA, mediaB, mediaC, mediaD
 
     def get_visitantes_por_sala(self):
-        visitantesA= SALA_A.contador_visitantes
+        visitantesA = SALA_A.contador_visitantes
         visitantesB = SALA_B.contador_visitantes
         visitantesC = SALA_C.contador_visitantes
         visitantesD = SALA_D.contador_visitantes
@@ -247,6 +247,8 @@ class Iteracion:
         # necesarios incluyendo el fin de recorrido si correspondiera
         self.lote_actual = Lote()
         SALA_C.add_lote(self.lote_actual, self.reloj)
+        # Se actualiza la cantidad total de visitas
+        self.cantidad_visitas += self.lote_actual.visitantes
         # Se calcula la proxima llegada
         self.set_proxima_llegada()
         acu = 0
@@ -267,7 +269,7 @@ class Iteracion:
            # Acciones si un lote llega al final del recorrido
             lote.fin_recorrido = None
             # Actualizo la cantidad total de visitas
-            self.cantidad_visitas += lote.visitantes
+            #self.cantidad_visitas += lote.visitantes
 
             # Se verifica si la sala tenia algun lote en cola y este puede entrar en la sala
             for i in range(len(sala.en_cola)):
@@ -307,7 +309,15 @@ class Iteracion:
         # Esta funcion cuenta como una iteracion adicional en caso de que pueda ingresar un lote a la sala
         # No se si corresponde sumar una iteracion
         sala.en_sala.append(lote)
+
+        # Hago la diferencia del momento en el que entro en la cola y el momento que lo agrregamos a la sala
+        lote.tiempo_espera_cola = self.reloj - lote.tiempo_espera_cola
+        sala.tiempo_espera_medio += lote.tiempo_espera_cola
+        #sala.contador_cola += 1
+        sala.contador_cola_a_sala += 1
+
         lote.cola = False
+        sala.contador_visitantes += lote.visitantes
         lote.set_fin_recorrido(self.reloj)
 
     def calcular_iteracion(self, tiempo):

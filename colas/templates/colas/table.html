@@ -27,12 +27,12 @@
         <th colspan="{{num_lotes|length}}0">Lotes</th>
     </tr>
     <tr>
-        <th rowspan="2" colspan="1" scope="row">numero</th>
-        <th rowspan="2" colspan="1" scope="col">tipo</th>
-        <th rowspan="2" colspan="1" scope="col">reloj</th>
-        <th rowspan="2" colspan="1" scope="col">proxima llegada</th>
-        <th rowspan="2" colspan="1" scope="col">cantidad de visitas</th>
-        <th rowspan="2" colspan="1" scope="col">maxima cola</th>
+        <th rowspan="2" colspan="1" scope="row">Numero</th>
+        <th rowspan="2" colspan="1" scope="col">Tipo</th>
+        <th rowspan="2" colspan="1" scope="col">Reloj</th>
+        <th rowspan="2" colspan="1" scope="col">Proxima llegada</th>
+        <th rowspan="2" colspan="1" scope="col">Cantidad de visitas</th>
+        <th rowspan="2" colspan="1" scope="col">Maxima cola</th>
         <th colspan="2" scope="col">Sala A</th>
         <th colspan="2" scope="col">Sala B</th>
         <th colspan="2" scope="col">Sala C</th>
@@ -54,10 +54,10 @@
         <th colspan="1" scope="col">D Cola</th>
         <!-- Lotes -->
         {% for num in num_lotes %}
-        <th scope="col">{{num}} estado</th>
-        <th scope="col">{{num}} visitantes</th>
-        <th scope="col">{{num}} recorrido</th>
-        <th scope="col">{{num}} <p class="m-auto">fin</p></th>
+        <th scope="col">{{num}} Estado</th>
+        <th scope="col">{{num}} Visitantes</th>
+        <th scope="col">{{num}} Recorrido</th>
+        <th scope="col">{{num}} <p class="m-auto">Fin</p></th>
 
         {% endfor %}
     </tr>

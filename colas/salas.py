@@ -13,6 +13,7 @@ class Sala:
         #El lote ya tiene la propiedad de numero, pero esto es para contar lotes por sala
         self.contador_lotes = 0
         self.contador_cola = 0
+        self.contador_cola_a_sala= 0
         self.contador_sala = 0
         self.tiempo_recorrido_medio = 0
         self.tiempo_espera_medio = 0
@@ -71,15 +72,18 @@ class Sala:
             self.contador_sala += 1
             self.tiempo_recorrido_medio += (lote.fin_recorrido - reloj)
             self.contador_visitantes += lote.visitantes
-            if lote.tiempo_espera_cola != 0:
-                #Hago la diferencia del momento en el que entro en la cola y el momento que lo agrregamos a la sala
-                lote.tiempo_espera_cola = reloj - lote.tiempo_espera_cola
-                self.tiempo_espera_medio += lote.tiempo_espera_cola
+            #if lote.tiempo_espera_cola != 0:
+            #    #Hago la diferencia del momento en el que entro en la cola y el momento que lo agrregamos a la sala
+            #    lote.tiempo_espera_cola = reloj - lote.tiempo_espera_cola
+            #    self.tiempo_espera_medio += lote.tiempo_espera_cola
         else:
+            #Solo la primera vez que entre a la cola
+            if not lote.cola:
+                self.contador_cola += 1
+                lote.tiempo_espera_cola = reloj
             lote.cola = True
             self.en_cola.append(lote)
-            self.contador_cola += 1
-            lote.tiempo_espera_cola = reloj
+
 
     def entrar_a_sala(self):
         """Mueve un lote de la cola a la sala"""
@@ -95,7 +99,7 @@ class Sala:
         """Limpia las salas para una nueva simulacion"""
         self.en_sala = []
         self.en_cola = []
-        self.contador_visitantes, self.tiempo_recorrido_medio, self.tiempo_espera_medio, self.contador_lotes, self.contador_cola, self.contador_lotes_sala = 0,0,0,0,0,0
+        self.contador_visitantes, self.tiempo_recorrido_medio, self.tiempo_espera_medio, self.contador_lotes, self.contador_cola, self.contador_cola_a_sala, self.contador_lotes_sala = 0,0,0,0,0,0,0
 
 
 class SalaNormal(Sala):
@@ -120,10 +124,10 @@ class SalaUniforme(Sala):
         return self.generador.uniforme_next(a=self.minimo, b=self.maximo)
 
 
-SALA_A = SalaNormal("A", capacidad=8, media=30, desviacion=5)
-SALA_B = SalaNormal("B", capacidad=8, media=25, desviacion=4)
-SALA_C = SalaUniforme("C", capacidad=10, minimo=12, maximo=18)
-SALA_D = SalaUniforme("D", capacidad=10, minimo=14, maximo=18)
+SALA_A = SalaNormal("A", capacidad=80, media=30, desviacion=5)
+SALA_B = SalaNormal("B", capacidad=80, media=25, desviacion=4)
+SALA_C = SalaUniforme("C", capacidad=100, minimo=12, maximo=18)
+SALA_D = SalaUniforme("D", capacidad=100, minimo=14, maximo=18)
 
 if __name__ == '__main__':
     print(SALA_A, SALA_B, SALA_C, SALA_D)

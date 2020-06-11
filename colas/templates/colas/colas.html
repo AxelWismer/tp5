@@ -21,6 +21,7 @@
 <div class="text-right">
     <button class="btn btn-lg btn-primary">Calcular</button>
 </div>
+<br>
 {% if tabla %}
 <table class="table">
     <thead>
@@ -41,18 +42,18 @@
             <td>{{ visitantesD }}</td>
         </tr>
         <tr>
-            <th scope="row">Porcentaje en cola</th>
-            <td>{{ pctjeA }}</td>
-            <td>{{ pctjeB }}</td>
-            <td>{{ pctjeC }}</td>
-            <td>{{ pctjeD }}</td>
+            <th scope="row">Porcentaje de lotes en cola</th>
+            <td>{{ pctjeA }}%</td>
+            <td>{{ pctjeB }}%</td>
+            <td>{{ pctjeC }}%</td>
+            <td>{{ pctjeD }}%</td>
         </tr>
         <tr>
           <th scope="row">Tiempo de espera medio</th>
-            <td>{{ tiempoA }}</td>
-            <td>{{ tiempoB }}</td>
-            <td>{{ tiempoC }}</td>
-            <td>{{ tiempoD }}</td>
+            <td>{{ tiempoA }} min.</td>
+            <td>{{ tiempoB }} min.</td>
+            <td>{{ tiempoC }} min.</td>
+            <td>{{ tiempoD }} min.</td>
         </tr>
   </tbody>
 </table>
