@@ -124,10 +124,10 @@ class SalaUniforme(Sala):
         return self.generador.uniforme_next(a=self.minimo, b=self.maximo)
 
 
-SALA_A = SalaNormal("A", capacidad=80, media=30, desviacion=5)
-SALA_B = SalaNormal("B", capacidad=80, media=25, desviacion=4)
-SALA_C = SalaUniforme("C", capacidad=100, minimo=12, maximo=18)
-SALA_D = SalaUniforme("D", capacidad=100, minimo=14, maximo=18)
+SALA_A = SalaNormal("A", capacidad=20, media=30, desviacion=5)
+SALA_B = SalaNormal("B", capacidad=20, media=25, desviacion=4)
+SALA_C = SalaUniforme("C", capacidad=25, minimo=12, maximo=18)
+SALA_D = SalaUniforme("D", capacidad=25, minimo=14, maximo=18)
 
 if __name__ == '__main__':
     print(SALA_A, SALA_B, SALA_C, SALA_D)

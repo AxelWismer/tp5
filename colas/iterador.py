@@ -77,7 +77,7 @@ class Iteracion:
             self.tabla.append(self.as_dict)
         else:
             self.tabla_final.append(self.as_dict)
-            if len(self.tabla_final) > 10:
+            if len(self.tabla_final) > self.ultimas_filas + 1:
                 self.tabla_final.pop(0)
             # Actualizo el proximo elemnto a reemplazar cuidando de que se mantenga en el rango de las ultimas filas
             # self.pos_ultimo_elemento = (self.pos_ultimo_elemento + 1) % self.ultimas_filas
@@ -329,6 +329,8 @@ class Iteracion:
                 self.llegada()
             else:
                 self.fin_recorrido_sala()
+        # Elimino el ultimo lote porque se pasa
+        self.tabla_final.pop(-1)
 
     # Mostrar los lotes de un intervalo en una matriz
     def get_matrix(self, tabla):
