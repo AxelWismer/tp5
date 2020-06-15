@@ -1,5 +1,4 @@
 from generador_pseudoaliatorio.generador import Generador
-from colas.salas import SALA_A, SALA_B, SALA_C, SALA_D
 
 generador = Generador(decimals=4, random=True)
 
@@ -28,7 +27,13 @@ class Lote:
     #             dead.add(ref)
     #     cls.instances -= dead
 
-    def __init__(self):
+    def __init__(self, sala_a, sala_b, sala_c, sala_d):
+        # Salas
+        self.sala_a = sala_a
+        self.sala_b = sala_b
+        self.sala_c = sala_c
+        self.sala_d = sala_d
+
         self.numero = Lote.get_nro()
         self.sala_actual = None
         self.cola = False
@@ -67,11 +72,11 @@ class Lote:
     def get_recorrido(self, rnd):
         """Calcula el recorrido de un grupo"""
         if rnd < 0.6:
-            return [SALA_C, SALA_D]
+            return [self.sala_c, self.sala_d]
         elif rnd < 0.8:
-            return [SALA_C, SALA_A, SALA_B, SALA_D]
+            return [self.sala_c, self.sala_a, self.sala_b, self.sala_d]
         else:
-            return [SALA_C, SALA_A, SALA_D]
+            return [self.sala_c, self.sala_a, self.sala_d]
 
     def ultima_sala(self):
         return self.sala_actual == self.recorrido[-1]
@@ -133,8 +138,8 @@ if __name__ == '__main__':
     # print(lote)
 
     # Probar incrementar el numero de una sala
-    a = Lote()
-    b = Lote()
-    print(list(Lote.get_instances()))
-    b = 0
-    print(list(Lote.get_instances()))
+    # a = Lote()
+    # b = Lote()
+    # print(list(Lote.get_instances()))
+    # b = 0
+    # print(list(Lote.get_instances()))

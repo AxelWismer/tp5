@@ -31,6 +31,12 @@ class Sala:
             'nombre': self.nombre,
             "cola": self.cola,
             "capacidad": self.capacidad,
+            "cantidad_visitantes": self.contador_visitantes,
+            "lotes_en_sala": self.contador_lotes,
+            "lotes_en_cola": self.contador_cola,
+            "tiempo_espera": round(self.tiempo_espera_medio, 2),
+            "cola_a_sala": self.contador_cola_a_sala,
+
         }
 
     @property
@@ -99,7 +105,7 @@ class Sala:
         """Limpia las salas para una nueva simulacion"""
         self.en_sala = []
         self.en_cola = []
-        self.contador_visitantes, self.tiempo_recorrido_medio, self.tiempo_espera_medio, self.contador_lotes, self.contador_cola, self.contador_cola_a_sala, self.contador_lotes_sala = 0,0,0,0,0,0,0
+        self.contador_visitantes, self.tiempo_recorrido_medio, self.tiempo_espera_medio, self.contador_lotes, self.cantidad_visitantes, self.contador_cola_a_sala, self.contador_lotes_sala = 0, 0, 0, 0, 0, 0, 0
 
 
 class SalaNormal(Sala):
@@ -123,11 +129,3 @@ class SalaUniforme(Sala):
     def tiempo_recorrido(self):
         return self.generador.uniforme_next(a=self.minimo, b=self.maximo)
 
-
-SALA_A = SalaNormal("A", capacidad=20, media=30, desviacion=5)
-SALA_B = SalaNormal("B", capacidad=20, media=25, desviacion=4)
-SALA_C = SalaUniforme("C", capacidad=25, minimo=12, maximo=18)
-SALA_D = SalaUniforme("D", capacidad=25, minimo=14, maximo=18)
-
-if __name__ == '__main__':
-    print(SALA_A, SALA_B, SALA_C, SALA_D)

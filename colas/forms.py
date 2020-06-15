@@ -7,6 +7,12 @@ class ParametersForm(forms.Form):
     ultimas_filas = forms.IntegerField(label='ultimas filas', initial=10, min_value=0)
     tiempo = forms.IntegerField(label='tiempo', initial=60, min_value=0)
 
+    # Salas
+    capacidad_A = forms.IntegerField(label='capacidad sala A', initial=10, min_value=0)
+    capacidad_B = forms.IntegerField(label='capacidad sala B', initial=10, min_value=0)
+    capacidad_C = forms.IntegerField(label='capacidad sala C', initial=15, min_value=0)
+    capacidad_D = forms.IntegerField(label='capacidad sala D', initial=15, min_value=0)
+
     def __init__(self, *args, **kwargs):
         super(ParametersForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()

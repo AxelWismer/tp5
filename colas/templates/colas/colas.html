@@ -18,6 +18,21 @@
         {{ form.tiempo|as_crispy_field }}
     </div>
 </div>
+<div class="row">
+    <div class="col-3">
+        {{ form.capacidad_A|as_crispy_field }}
+    </div>
+    <div class="col-3">
+        {{ form.capacidad_B|as_crispy_field }}
+    </div>
+    <div class="col-3">
+        {{ form.capacidad_C|as_crispy_field }}
+    </div>
+    <div class="col-3">
+        {{ form.capacidad_D|as_crispy_field }}
+    </div>
+
+</div>
 <div class="text-right">
     <button class="btn btn-lg btn-primary">Calcular</button>
 </div>

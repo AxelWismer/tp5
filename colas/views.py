@@ -15,6 +15,8 @@ class Colas(generic.FormView):
 
         # Se genera el iterador con los parametros que indican que valores guardar
         it = Iteracion(
+            capcacidades=[form.cleaned_data['capacidad_A'], form.cleaned_data['capacidad_B'],
+                          form.cleaned_data['capacidad_C'], form.cleaned_data['capacidad_D']],
             desde=desde,
             hasta=hasta,
             ultimas_filas=ultimas_filas

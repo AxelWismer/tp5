@@ -33,10 +33,10 @@
         <th rowspan="2" colspan="1" scope="col">Proxima llegada</th>
         <th rowspan="2" colspan="1" scope="col">Cantidad de visitas</th>
         <th rowspan="2" colspan="1" scope="col">Maxima cola</th>
-        <th colspan="2" scope="col">Sala A</th>
-        <th colspan="2" scope="col">Sala B</th>
-        <th colspan="2" scope="col">Sala C</th>
-        <th colspan="2" scope="col">Sala D</th>
+        <th colspan="6" scope="col">Sala A</th>
+        <th colspan="6" scope="col">Sala B</th>
+        <th colspan="6" scope="col">Sala C</th>
+        <th colspan="6" scope="col">Sala D</th>
 
         <!-- Lotes -->
         {% for num in num_lotes %}
@@ -46,12 +46,36 @@
     <tr>
         <th colspan="1" scope="col">A Capacidad</th>
         <th colspan="1" scope="col">A Cola</th>
+        <th colspan="1" scope="col">A Visitantes acum</th>
+        <th colspan="1" scope="col">A Lotes acum</th>
+        <th colspan="1" scope="col">A Lotes en cola acum</th>
+        <th colspan="1" scope="col">A Tiempo de espera</th>
+        <th colspan="1" scope="col">A Ingreso lotes a sala</th>
+
         <th colspan="1" scope="col">B Capacidad</th>
         <th colspan="1" scope="col">B Cola</th>
+        <th colspan="1" scope="col">B Visitantes acum</th>
+        <th colspan="1" scope="col">B Lotes acum</th>
+        <th colspan="1" scope="col">B Lotes en cola acum</th>
+        <th colspan="1" scope="col">B Tiempo de espera</th>
+        <th colspan="1" scope="col">B Ingreso lotes a sala</th>
+
         <th colspan="1" scope="col">C Capacidad</th>
         <th colspan="1" scope="col">C Cola</th>
+        <th colspan="1" scope="col">C Visitantes acum</th>
+        <th colspan="1" scope="col">C Lotes acum</th>
+        <th colspan="1" scope="col">C Lotes en cola acum</th>
+        <th colspan="1" scope="col">C Tiempo de espera</th>
+        <th colspan="1" scope="col">C Ingreso lotes a sala</th>
+
         <th colspan="1" scope="col">D Capacidad</th>
         <th colspan="1" scope="col">D Cola</th>
+        <th colspan="1" scope="col">D Visitantes acum</th>
+        <th colspan="1" scope="col">D Lotes acum</th>
+        <th colspan="1" scope="col">D Lotes en cola acum</th>
+        <th colspan="1" scope="col">D Tiempo de espera</th>
+        <th colspan="1" scope="col">D Ingreso lotes a sala</th>
+
         <!-- Lotes -->
         {% for num in num_lotes %}
         <th scope="col">{{num}} Estado</th>
@@ -75,12 +99,36 @@
         <!-- Salas -->
         <td>{{linea.salas.sala_a.capacidad}}</td>
         <td>{{linea.salas.sala_a.cola}}</td>
+        <td>{{linea.salas.sala_a.cantidad_visitantes}}</td>
+        <td>{{linea.salas.sala_a.lotes_en_sala}}</td>
+        <td>{{linea.salas.sala_a.lotes_en_cola}}</td>
+        <td>{{linea.salas.sala_a.tiempo_espera}}</td>
+        <td>{{linea.salas.sala_a.cola_a_sala}}</td>
+
         <td>{{linea.salas.sala_b.capacidad}}</td>
         <td>{{linea.salas.sala_b.cola}}</td>
+        <td>{{linea.salas.sala_b.cantidad_visitantes}}</td>
+        <td>{{linea.salas.sala_b.lotes_en_sala}}</td>
+        <td>{{linea.salas.sala_b.lotes_en_cola}}</td>
+        <td>{{linea.salas.sala_b.tiempo_espera}}</td>
+        <td>{{linea.salas.sala_b.cola_a_sala}}</td>
+
+
         <td>{{linea.salas.sala_c.capacidad}}</td>
         <td>{{linea.salas.sala_c.cola}}</td>
+        <td>{{linea.salas.sala_c.cantidad_visitantes}}</td>
+        <td>{{linea.salas.sala_c.lotes_en_sala}}</td>
+        <td>{{linea.salas.sala_c.lotes_en_cola}}</td>
+        <td>{{linea.salas.sala_c.tiempo_espera}}</td>
+        <td>{{linea.salas.sala_c.cola_a_sala}}</td>
+
         <td>{{linea.salas.sala_d.capacidad}}</td>
         <td>{{linea.salas.sala_d.cola}}</td>
+        <td>{{linea.salas.sala_d.cantidad_visitantes}}</td>
+        <td>{{linea.salas.sala_d.lotes_en_sala}}</td>
+        <td>{{linea.salas.sala_d.lotes_en_cola}}</td>
+        <td>{{linea.salas.sala_d.tiempo_espera}}</td>
+        <td>{{linea.salas.sala_d.cola_a_sala}}</td>
 
         <!-- Lotes -->
         {% for lote in linea.lotes_arreglados %}

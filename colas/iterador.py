@@ -1,11 +1,10 @@
-import random
-
 from generador_pseudoaliatorio.generador import Generador
 from colas.lote import Lote
-from colas.salas import SALA_A, SALA_B, SALA_C, SALA_D
+from colas.salas import SalaNormal, SalaUniforme
+
 
 class Iteracion:
-    def __init__(self, desde=0, hasta=30, ultimas_filas=10, decimales=4):
+    def __init__(self, capcacidades, desde=0, hasta=30, ultimas_filas=10, decimales=4):
         self.tabla = []
         self.tabla_final = []
         self.pos_ultimo_elemento = 0
@@ -29,6 +28,12 @@ class Iteracion:
         self.desde = desde
         self.hasta = hasta
         self.ultimas_filas = ultimas_filas
+
+        # Salas
+        self.sala_a = SalaNormal("A", capacidad=capcacidades[0], media=30, desviacion=5)
+        self.sala_b = SalaNormal("B", capacidad=capcacidades[1], media=25, desviacion=4)
+        self.sala_c = SalaUniforme("C", capacidad=capcacidades[2], minimo=12, maximo=18)
+        self.sala_d = SalaUniforme("D", capacidad=capcacidades[3], minimo=14, maximo=18)
 
     def __str__(self):
         dic = self.as_dict
@@ -62,10 +67,10 @@ class Iteracion:
             'cantidad_visitas': self.cantidad_visitas,
             'maximo_cola': self.maximo_cola,
             'salas': {
-                'sala_a': SALA_A.as_dict(),
-                'sala_b': SALA_B.as_dict(),
-                'sala_c': SALA_C.as_dict(),
-                'sala_d': SALA_D.as_dict(),
+                'sala_a': self.sala_a.as_dict(),
+                'sala_b': self.sala_b.as_dict(),
+                'sala_c': self.sala_c.as_dict(),
+                'sala_d': self.sala_d.as_dict(),
             },
             'lotes': {lote.numero : lote.as_dict() for lote in self.get_lotes()}
         }
@@ -77,7 +82,7 @@ class Iteracion:
             self.tabla.append(self.as_dict)
         else:
             self.tabla_final.append(self.as_dict)
-            if len(self.tabla_final) > self.ultimas_filas + 1:
+            if len(self.tabla_final) > self.ultimas_filas:
                 self.tabla_final.pop(0)
             # Actualizo el proximo elemnto a reemplazar cuidando de que se mantenga en el rango de las ultimas filas
             # self.pos_ultimo_elemento = (self.pos_ultimo_elemento + 1) % self.ultimas_filas
@@ -97,32 +102,32 @@ class Iteracion:
 
     def get_lotes_en_sala(self):
         """Devuelve una lista con los lotes en sala de todas las salas"""
-        return SALA_A.en_sala + SALA_B.en_sala + SALA_C.en_sala + SALA_D.en_sala
+        return self.sala_a.en_sala + self.sala_b.en_sala + self.sala_c.en_sala + self.sala_d.en_sala
 
     def get_lotes_en_cola(self):
         """Devuelve una lista con los lotes en sala de todas las colas"""
-        return SALA_A.en_cola + SALA_B.en_cola + SALA_C.en_cola + SALA_D.en_cola
+        return self.sala_a.en_cola + self.sala_b.en_cola + self.sala_c.en_cola + self.sala_d.en_cola
 
     #ESTADISTICAS
     def get_numero_lotes_encolados(self):
-        colaA = SALA_A.contador_cola
-        colaB = SALA_B.contador_cola
-        colaC = SALA_C.contador_cola
-        colaD = SALA_D.contador_cola
+        colaA = self.sala_a.contador_cola
+        colaB = self.sala_b.contador_cola
+        colaC = self.sala_c.contador_cola
+        colaD = self.sala_d.contador_cola
         return colaA, colaB, colaC, colaD
 
     def get_numero_lotes(self):
-        lotesA = SALA_A.contador_lotes
-        lotesB = SALA_B.contador_lotes
-        lotesC = SALA_C.contador_lotes
-        lotesD = SALA_D.contador_lotes
+        lotesA = self.sala_a.contador_lotes
+        lotesB = self.sala_b.contador_lotes
+        lotesC = self.sala_c.contador_lotes
+        lotesD = self.sala_d.contador_lotes
         return lotesA, lotesB, lotesC, lotesD
 
     def get_numero_lotes_sala(self):
-        lotesA_sala = SALA_A.contador_sala
-        lotesB_sala = SALA_B.contador_sala
-        lotesC_sala = SALA_C.contador_sala
-        lotesD_sala = SALA_D.contador_sala
+        lotesA_sala = self.sala_a.contador_sala
+        lotesB_sala = self.sala_b.contador_sala
+        lotesC_sala = self.sala_c.contador_sala
+        lotesD_sala = self.sala_d.contador_sala
         return lotesA_sala, lotesB_sala, lotesC_sala, lotesD_sala
 
     def calcular_porcentaje_lotes_cola(self):
@@ -152,66 +157,66 @@ class Iteracion:
         return porcentajeA, porcentajeB, porcentajeC, porcentajeD
 
     def get_tiempo_medio_recorrido(self):
-        tiempoA = SALA_A.tiempo_recorrido_medio
-        tiempoB = SALA_B.tiempo_recorrido_medio
-        tiempoC = SALA_C.tiempo_recorrido_medio
-        tiempoD = SALA_D.tiempo_recorrido_medio
+        tiempoA = self.sala_a.tiempo_recorrido_medio
+        tiempoB = self.sala_b.tiempo_recorrido_medio
+        tiempoC = self.sala_c.tiempo_recorrido_medio
+        tiempoD = self.sala_d.tiempo_recorrido_medio
 
-        if SALA_A.contador_lotes == 0:
+        if self.sala_a.contador_lotes == 0:
             mediaA = 0
         else:
-            mediaA = tiempoA/SALA_A.contador_sala
+            mediaA = tiempoA / self.sala_a.contador_sala
 
-        if SALA_B.contador_lotes == 0:
+        if self.sala_b.contador_lotes == 0:
             mediaB = 0
         else:
-            mediaB = tiempoB/SALA_B.contador_sala
+            mediaB = tiempoB / self.sala_b.contador_sala
 
-        if SALA_C.contador_lotes == 0:
+        if self.sala_c.contador_lotes == 0:
             mediaC = 0
         else:
-            mediaC = tiempoC/SALA_C.contador_sala
+            mediaC = tiempoC/self.sala_c.contador_sala
 
-        if SALA_D.contador_lotes == 0:
+        if self.sala_d.contador_lotes == 0:
             mediaD = 0
         else:
-            mediaD = tiempoD/SALA_D.contador_sala
+            mediaD = tiempoD/self.sala_d.contador_sala
 
         return mediaA, mediaB, mediaC, mediaD
 
     def get_tiempo_espera_cola(self):
-        tiempoA = SALA_A.tiempo_espera_medio
-        tiempoB = SALA_B.tiempo_espera_medio
-        tiempoC = SALA_C.tiempo_espera_medio
-        tiempoD = SALA_D.tiempo_espera_medio
+        tiempoA = self.sala_a.tiempo_espera_medio
+        tiempoB = self.sala_b.tiempo_espera_medio
+        tiempoC = self.sala_c.tiempo_espera_medio
+        tiempoD = self.sala_d.tiempo_espera_medio
 
-        if SALA_A.contador_cola_a_sala == 0:
+        if self.sala_a.contador_cola_a_sala == 0:
             mediaA = 0
         else:
-            mediaA = self.generador.truncate(tiempoA / SALA_A.contador_cola_a_sala, 2)
+            mediaA = self.generador.truncate(tiempoA / self.sala_a.contador_cola_a_sala, 2)
 
-        if SALA_B.contador_cola_a_sala == 0:
+        if self.sala_b.contador_cola_a_sala == 0:
             mediaB = 0
         else:
-            mediaB = self.generador.truncate(tiempoB / SALA_B.contador_cola_a_sala, 2)
+            mediaB = self.generador.truncate(tiempoB / self.sala_b.contador_cola_a_sala, 2)
 
-        if SALA_C.contador_cola_a_sala == 0:
+        if self.sala_c.contador_cola_a_sala == 0:
             mediaC = 0
         else:
-            mediaC = self.generador.truncate(tiempoC / SALA_C.contador_cola_a_sala, 2)
+            mediaC = self.generador.truncate(tiempoC / self.sala_c.contador_cola_a_sala, 2)
 
-        if SALA_D.contador_cola_a_sala == 0:
+        if self.sala_d.contador_cola_a_sala == 0:
             mediaD = 0
         else:
-            mediaD = self.generador.truncate(tiempoD / SALA_D.contador_cola_a_sala, 2)
+            mediaD = self.generador.truncate(tiempoD / self.sala_d.contador_cola_a_sala, 2)
 
         return mediaA, mediaB, mediaC, mediaD
 
     def get_visitantes_por_sala(self):
-        visitantesA = SALA_A.contador_visitantes
-        visitantesB = SALA_B.contador_visitantes
-        visitantesC = SALA_C.contador_visitantes
-        visitantesD = SALA_D.contador_visitantes
+        visitantesA = self.sala_a.contador_visitantes
+        visitantesB = self.sala_b.contador_visitantes
+        visitantesC = self.sala_c.contador_visitantes
+        visitantesD = self.sala_d.contador_visitantes
         return visitantesA, visitantesB, visitantesC, visitantesD
 
 
@@ -245,15 +250,15 @@ class Iteracion:
         """Setea los campos para el caso de una llegada nueva"""
         # Se agrega el lote a la sala C, se calculan todos los atributos
         # necesarios incluyendo el fin de recorrido si correspondiera
-        self.lote_actual = Lote()
-        SALA_C.add_lote(self.lote_actual, self.reloj)
+        self.lote_actual = Lote(self.sala_a, self.sala_b, self.sala_c, self.sala_d)
+        self.sala_c.add_lote(self.lote_actual, self.reloj)
         # Se actualiza la cantidad total de visitas
         self.cantidad_visitas += self.lote_actual.visitantes
         # Se calcula la proxima llegada
         self.set_proxima_llegada()
         acu = 0
-        for i in range(len(SALA_C.en_cola)):
-            acu += SALA_C.en_cola[i].visitantes
+        for i in range(len(self.sala_c.en_cola)):
+            acu += self.sala_c.en_cola[i].visitantes
         if acu > self.maximo_cola:
             self.maximo_cola = acu
         self.guardar_iteracion()
@@ -267,7 +272,7 @@ class Iteracion:
         # Verifica si el lote se encuente en la ultima sala del recorrido
         if lote.ultima_sala():
            # Acciones si un lote llega al final del recorrido
-            lote.fin_recorrido = None
+            lote.fin_recorrido = '-'
             # Actualizo la cantidad total de visitas
             #self.cantidad_visitas += lote.visitantes
 
@@ -322,15 +327,15 @@ class Iteracion:
 
     def calcular_iteracion(self, tiempo):
         """Metodo que realiza el calculo completo tomando los datos de la iteracion anterior"""
-        while self.reloj < tiempo:
+        while True:
             self.numero += 1
             self.proximo_evento()
+            if self.reloj >= tiempo:
+                break
             if self.evento == "llegada":
                 self.llegada()
             else:
                 self.fin_recorrido_sala()
-        # Elimino el ultimo lote porque se pasa
-        self.tabla_final.pop(-1)
 
     # Mostrar los lotes de un intervalo en una matriz
     def get_matrix(self, tabla):
@@ -381,10 +386,10 @@ class Iteracion:
 
     def limpiar_salas(self):
         """Limpia todas las salas para una nueva simulacion"""
-        SALA_A.limpiar_sala()
-        SALA_B.limpiar_sala()
-        SALA_C.limpiar_sala()
-        SALA_D.limpiar_sala()
+        self.sala_a.limpiar_sala()
+        self.sala_b.limpiar_sala()
+        self.sala_c.limpiar_sala()
+        self.sala_d.limpiar_sala()
         Lote.resetrar_lote()
 
 
