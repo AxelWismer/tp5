@@ -35,6 +35,13 @@ class Iteracion:
         self.sala_c = SalaUniforme("C", capacidad=capcacidades[2], minimo=12, maximo=18)
         self.sala_d = SalaUniforme("D", capacidad=capcacidades[3], minimo=14, maximo=18)
 
+        # TP6
+        self.estado_servidor = 'libre'
+        self.porc_inestable = 0
+        self.tiempo_inestable = 0
+        self.tiempo_bloqueo = 0
+        self.k = 20
+
     def __str__(self):
         dic = self.as_dict
         dic.pop('salas')
@@ -219,7 +226,7 @@ class Iteracion:
         visitantesD = self.sala_d.contador_visitantes
         return visitantesA, visitantesB, visitantesC, visitantesD
 
-
+    # Proximos eventos
     def proximo_lote(self):
         """Devuelve el proximo lote que finalizara el recorrido"""
         lotes = self.get_lotes_en_sala()
@@ -235,15 +242,23 @@ class Iteracion:
     def proximo_evento(self):
         lote_proximo = self.proximo_lote()
         if lote_proximo:
-            if self.proxima_llegada < lote_proximo.fin_recorrido:
+            # Bloquear servidor
+            if self.tiempo_inestable < self.proxima_llegada and self.tiempo_inestable < lote_proximo.fin_recorrido \
+                    and self.estado_servidor != 'bloqueado':
+                self.evento = "bloqueo"
+                self.reloj = self.tiempo_inestable
+            # Llegada
+            elif self.proxima_llegada < lote_proximo.fin_recorrido:
                 self.evento = "llegada"
                 self.reloj = self.proxima_llegada
+            # Fin de recorrido
             else:
                 self.evento = "fin_recorrido"
                 self.lote_actual = lote_proximo
                 self.reloj = lote_proximo.fin_recorrido
         else:
             self.evento = "llegada"
+    #         todo no se tendria que registrar el tiempo de proxima llega
 
     # Eventos
     def llegada(self):
@@ -325,8 +340,34 @@ class Iteracion:
         sala.contador_visitantes += lote.visitantes
         lote.set_fin_recorrido(self.reloj)
 
+    def bloquear_servidor(self):
+        """Se marca el servidor como bloqueado. se guardan las llegadas en una nueva cola para procesarlas cuando
+        se libere el servidor"""
+        
+
+    def desbloquear_servidor(self):
+        """Se marca el servidor como desbloqueado y se procesan todas las salidas anteriores a este tiempo"""
+
+    def set_inestable(self):
+        rnd = self.generador.rnd()
+        if rnd < .5:
+            self.porc_inestable = 100
+            self.tiempo_inestable = 250
+        elif rnd < .8:
+            self.porc_inestable = 70
+            self.tiempo_inestable = 220.2347
+        else:
+            self.porc_inestable = 50
+            self.tiempo_inestable = 192.1554
+
+        self.estado_servidor = 'bloqueado'
+        self.tiempo_bloqueo = self.tiempo_inestable + self.k
+
     def calcular_iteracion(self, tiempo):
         """Metodo que realiza el calculo completo tomando los datos de la iteracion anterior"""
+        # Setear bloqueo del servidor
+        self.set_inestable()
+
         while True:
             self.numero += 1
             self.proximo_evento()
