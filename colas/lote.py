@@ -41,8 +41,11 @@ class Lote:
         if self.visitantes == 0:
             self.visitantes += 1
         self.recorrido = self.get_recorrido(generador.rnd())
-        self.fin_recorrido = ''
+        self.fin_recorrido = 0
         self.tiempo_espera_cola = 0
+        # Tiempo restante despues de que se bloquea
+        self.tiempo_restante = 0
+        self.bloqueado = False
 
     def __str__(self):
         return str(self.as_dict()) + '\n'
@@ -50,6 +53,8 @@ class Lote:
     @property
     def estado(self):
         sala = self.sala_actual
+        if self.bloqueado:
+            return "bloqueado"
         if sala:
             return f'En sala {sala.nombre}' if not self.cola else f'En cola sala {sala.nombre}'
         return ""
@@ -64,6 +69,7 @@ class Lote:
             'visitantes': self.visitantes,
             'recorrido': self.recorrido_as_str(),
             'fin_recorrido': self.fin_recorrido,
+            'tiempo_restante': self.tiempo_restante,
         }
 
     def set_fin_recorrido(self, reloj):
@@ -88,8 +94,23 @@ class Lote:
             raise Exception("No existe proxima sala")
 
     @classmethod
-    def resetrar_lote(cls):
+    def resetear_lote(cls):
         cls.nro = 0
+
+    def bloquear_recorrido(self, reloj):
+        """Registra al lote como bloqueado indicando el tiempo de recorrido restante"""
+        self.bloqueado = True
+        # Si el lote no se encuentra en cola
+        if not self.cola:
+            # Calcula el tiempo que le falta para terminar el recorrido
+            self.tiempo_restante = self.fin_recorrido - reloj
+
+    def desbloquear_recorrido(self, reloj):
+        """Desbloquea el lote registrando su nuevo fin de recorrido"""
+        self.bloqueado = False
+        if not self.cola:
+            self.fin_recorrido = reloj + self.tiempo_restante
+            self.tiempo_restante = 0
 
 if __name__ == '__main__':
     x = 0

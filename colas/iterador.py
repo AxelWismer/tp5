@@ -39,8 +39,10 @@ class Iteracion:
         self.estado_servidor = 'libre'
         self.porc_inestable = 0
         self.tiempo_inestable = 0
-        self.tiempo_bloqueo = 0
+        self.fin_purga = 0
+        self.inicio_purga = 0
         self.k = 20
+
 
     def __str__(self):
         dic = self.as_dict
@@ -73,6 +75,13 @@ class Iteracion:
             # 'lote_actual': self.lote_actual,
             'cantidad_visitas': self.cantidad_visitas,
             'maximo_cola': self.maximo_cola,
+            # Bloqueo
+            'estado_servidor': self.estado_servidor,
+            'porcentaje_inestable': self.porc_inestable,
+            'inestable': self.tiempo_inestable,
+            'inicio_purga': self.inicio_purga,
+            'fin_purga': self.fin_purga,
+            # Salas
             'salas': {
                 'sala_a': self.sala_a.as_dict(),
                 'sala_b': self.sala_b.as_dict(),
@@ -229,7 +238,8 @@ class Iteracion:
     # Proximos eventos
     def proximo_lote(self):
         """Devuelve el proximo lote que finalizara el recorrido"""
-        lotes = self.get_lotes_en_sala()
+        # Elimino los lotes bloqueados
+        lotes = [lote for lote in self.get_lotes_en_sala() if not lote.bloqueado]
         if len(lotes) > 0:
             lote_proximo = lotes[0]
             for lote in lotes[1:]:
@@ -243,12 +253,20 @@ class Iteracion:
         lote_proximo = self.proximo_lote()
         if lote_proximo:
             # Bloquear servidor
-            if self.tiempo_inestable < self.proxima_llegada and self.tiempo_inestable < lote_proximo.fin_recorrido \
+            if 0 < self.inicio_purga < self.proxima_llegada and self.inicio_purga < lote_proximo.fin_recorrido \
                     and self.estado_servidor != 'bloqueado':
+                self.estado_servidor = 'bloqueado'
+
                 self.evento = "bloqueo"
                 self.reloj = self.tiempo_inestable
+            # Desbloquear servidor
+            elif 0 < self.fin_purga < self.proxima_llegada and self.fin_purga < lote_proximo.fin_recorrido \
+                    and self.estado_servidor != 'libre':
+                self.estado_servidor = 'libre'
+                self.evento = "desbloqueo"
+                self.reloj = self.fin_purga
             # Llegada
-            elif self.proxima_llegada < lote_proximo.fin_recorrido:
+            elif self.proxima_llegada < lote_proximo.fin_recorrido and self.estado_servidor != 'bloquado':
                 self.evento = "llegada"
                 self.reloj = self.proxima_llegada
             # Fin de recorrido
@@ -258,7 +276,9 @@ class Iteracion:
                 self.reloj = lote_proximo.fin_recorrido
         else:
             self.evento = "llegada"
-    #         todo no se tendria que registrar el tiempo de proxima llega
+            self.reloj = self.proxima_llegada
+
+    #         todo no se tendria que registrar el tiempo de proxima llegada
 
     # Eventos
     def llegada(self):
@@ -343,10 +363,21 @@ class Iteracion:
     def bloquear_servidor(self):
         """Se marca el servidor como bloqueado. se guardan las llegadas en una nueva cola para procesarlas cuando
         se libere el servidor"""
-        
+        self.estado_servidor = 'bloqueado'
+        # Obtengo los lotes de la sala c
+        lotes = self.sala_c.en_sala + self.sala_c.en_cola
+        for lote in lotes:
+            lote.bloquear_recorrido(self.reloj)
+        self.guardar_iteracion()
 
     def desbloquear_servidor(self):
         """Se marca el servidor como desbloqueado y se procesan todas las salidas anteriores a este tiempo"""
+        self.estado_servidor = 'libre'
+        lotes = self.sala_c.en_sala + self.sala_c.en_cola
+        for lote in lotes:
+            lote.desbloquear_recorrido(self.reloj)
+        self.set_inestable()
+        self.guardar_iteracion()
 
     def set_inestable(self):
         rnd = self.generador.rnd()
@@ -360,8 +391,8 @@ class Iteracion:
             self.porc_inestable = 50
             self.tiempo_inestable = 192.1554
 
-        self.estado_servidor = 'bloqueado'
-        self.tiempo_bloqueo = self.tiempo_inestable + self.k
+        self.inicio_purga = self.tiempo_inestable + self.reloj
+        self.fin_purga = self.inicio_purga + self.k
 
     def calcular_iteracion(self, tiempo):
         """Metodo que realiza el calculo completo tomando los datos de la iteracion anterior"""
@@ -375,8 +406,15 @@ class Iteracion:
                 break
             if self.evento == "llegada":
                 self.llegada()
-            else:
+            elif self.evento == "fin_recorrido":
                 self.fin_recorrido_sala()
+            elif self.evento == 'bloqueo':
+                self.bloquear_servidor()
+            elif self.evento == 'desbloqueo':
+                self.desbloquear_servidor()
+            else:
+                raise Exception("Evento inexistente")
+
 
     # Mostrar los lotes de un intervalo en una matriz
     def get_matrix(self, tabla):
@@ -431,11 +469,11 @@ class Iteracion:
         self.sala_b.limpiar_sala()
         self.sala_c.limpiar_sala()
         self.sala_d.limpiar_sala()
-        Lote.resetrar_lote()
+        Lote.resetear_lote()
 
 
 if __name__ == '__main__':
-    it = Iteracion(desde=0, hasta=30)
+    it = Iteracion([10, 10, 15, 15], desde=0, hasta=30)
     print(it)
     it.reloj = it.proxima_llegada
     it.calcular_iteracion(60)

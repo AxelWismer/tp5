@@ -23,7 +23,8 @@
         <th colspan="3">Evento</th>
         <th colspan="1">LLegada</th>
         <th colspan="2">Resultados</th>
-        <th colspan="8">Salas</th>
+        <th colspan="5">Bloqueo servidor C</th>
+        <th colspan="28">Salas</th>
         <th colspan="{{num_lotes|length}}0">Lotes</th>
     </tr>
     <tr>
@@ -33,6 +34,14 @@
         <th rowspan="2" colspan="1" scope="col">Proxima llegada</th>
         <th rowspan="2" colspan="1" scope="col">Cantidad de visitas</th>
         <th rowspan="2" colspan="1" scope="col">Maxima cola</th>
+        <!-- Bloqueo del servidor -->
+        <th rowspan="2" colspan="1" scope="col">Porcentaje Intestabilidad<br>(50,70,90)</th>
+        <th rowspan="2" colspan="1" scope="col">Intestable <br> (192.1554, 220.2347, 250)</th>
+        <th rowspan="2" colspan="1" scope="col">Estado Servidor</th>
+        <th rowspan="2" colspan="1" scope="col">Inicio Purga</th>
+        <th rowspan="2" colspan="1" scope="col">Fin Purga</th>
+
+
         <th colspan="7" scope="col">Sala A</th>
         <th colspan="7" scope="col">Sala B</th>
         <th colspan="7" scope="col">Sala C</th>
@@ -40,7 +49,7 @@
 
         <!-- Lotes -->
         {% for num in num_lotes %}
-        <th colspan="4" scope="col">{{num}}</th>
+        <th colspan="5" scope="col">{{num}}</th>
         {% endfor %}
     </tr>
     <tr>
@@ -82,6 +91,7 @@
         <th scope="col">{{num}} Visitantes</th>
         <th scope="col">{{num}} Recorrido</th>
         <th scope="col">{{num}} <p class="m-auto">Fin</p></th>
+        <th scope="col">{{num}} <p class="m-auto">Tiempo restante</p></th>
 
         {% endfor %}
     </tr>
@@ -95,6 +105,12 @@
         <td>{{linea.proxima_llegada}}</td>
         <td>{{linea.cantidad_visitas}}</td>
         <td>{{linea.maximo_cola}}</td>
+
+        <td>{{linea.porcentaje_inestable}}</td>
+        <td>{{linea.inestable}}</td>
+        <td>{{linea.estado_servidor}}</td>
+        <td>{{linea.inicio_purga}}</td>
+        <td>{{linea.fin_purga}}</td>
 
         <!-- Salas -->
         <td>{{linea.salas.sala_a.capacidad}}</td>
@@ -112,7 +128,6 @@
         <td>{{linea.salas.sala_b.lotes_en_cola}}</td>
         <td>{{linea.salas.sala_b.tiempo_espera}}</td>
         <td>{{linea.salas.sala_b.cola_a_sala}}</td>
-
 
         <td>{{linea.salas.sala_c.capacidad}}</td>
         <td>{{linea.salas.sala_c.cola}}</td>
@@ -136,6 +151,7 @@
         <td>{{lote.visitantes}}</td>
         <td>{{lote.recorrido}}</td>
         <td>{{lote.fin_recorrido}}</td>
+        <td>{{lote.tiempo_restante}}</td>
 
         {% endfor %}
     </tr>
