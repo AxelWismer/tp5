@@ -114,9 +114,19 @@
 
     <tbody>
     {% for linea in tabla %}
+    <!-- Resaltos los eventos bloqueado y desbloqueado  -->
+    {% if linea.evento == "bloqueo" or linea.evento == "desbloqueo" %}
+    <tr class="table-warning">
+        {% else %}
     <tr>
+        {% endif %}
+
         <td>{{linea.numero}}</td>
+        {% if linea.evento == "bloqueo" %}
+        <td class="table-danger">{{linea.evento}}</td>
+         {% else %}
         <td>{{linea.evento}}</td>
+         {% endif %}
         <td>{{linea.reloj}}</td>
         <td><strong>{{linea.proxima_llegada}}</strong></td>
         <td>{{linea.cantidad_visitas}}</td>
@@ -163,11 +173,22 @@
 
         <!-- Lotes -->
         {% for lote in linea.lotes_arreglados %}
+        {% if lote.estado == "bloqueado"%}
+        <td class="text-danger">{{lote.estado}}</td>
+        <td class="text-danger">{{lote.visitantes}}</td>
+        <td class="text-danger">{{lote.recorrido}}</td>
+        <td class="text-danger"><strong>{{lote.fin_recorrido}}</strong></td>
+        <td class="text-danger">{{lote.tiempo_restante}}</td>
+
+        {% else %}
         <td>{{lote.estado}}</td>
         <td>{{lote.visitantes}}</td>
         <td>{{lote.recorrido}}</td>
         <td><strong>{{lote.fin_recorrido}}</strong></td>
         <td>{{lote.tiempo_restante}}</td>
+
+        {% endif %}
+
 
         {% endfor %}
     </tr>

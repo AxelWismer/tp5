@@ -63,13 +63,18 @@ class Iteracion:
             print(f"{dic}\n{salas}\n{lotes}")
             print("-" * 20)
 
+    def show_evento(self):
+        if self.evento == "fin_recorrido" or self.evento == "llegada":
+            return self.evento + '(' + str(self.lote_actual.numero) + ')'
+        return self.evento
+
     # Devuelve un diccionario con los valores actuales del objeto
     @property
     def as_dict(self):
         # Creo un diccionario con todos los atributos del objeto
         dic = {
             'numero': self.numero,
-            'evento': self.evento,
+            'evento': self.show_evento(),
             'reloj': round(self.reloj, self.decimales),
             'proxima_llegada': self.proxima_llegada,
             # 'lote_actual': self.lote_actual,
@@ -266,7 +271,7 @@ class Iteracion:
                 self.evento = "desbloqueo"
                 self.reloj = self.fin_purga
             # Llegada
-            elif self.proxima_llegada < lote_proximo.fin_recorrido and self.estado_servidor != 'bloquado':
+            elif self.proxima_llegada < lote_proximo.fin_recorrido and self.estado_servidor != 'bloqueado':
                 self.evento = "llegada"
                 self.reloj = self.proxima_llegada
             # Fin de recorrido
@@ -368,6 +373,8 @@ class Iteracion:
         lotes = self.sala_c.en_sala + self.sala_c.en_cola
         for lote in lotes:
             lote.bloquear_recorrido(self.reloj)
+        # Se ajusta la proxima llegada
+        self.proxima_llegada = round(self.fin_purga + (self.proxima_llegada - self.reloj), 4)
         self.guardar_iteracion()
 
     def desbloquear_servidor(self):
@@ -391,8 +398,8 @@ class Iteracion:
             self.porc_inestable = 50
             self.tiempo_inestable = 192.1554
 
-        self.inicio_purga = self.tiempo_inestable + self.reloj
-        self.fin_purga = self.inicio_purga + self.k
+        self.inicio_purga = round(self.tiempo_inestable + self.reloj, 4)
+        self.fin_purga = round(self.inicio_purga + self.k, 4)
 
     def calcular_iteracion(self, tiempo):
         """Metodo que realiza el calculo completo tomando los datos de la iteracion anterior"""

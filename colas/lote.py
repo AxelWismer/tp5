@@ -103,7 +103,7 @@ class Lote:
         # Si el lote no se encuentra en cola
         if not self.cola:
             # Calcula el tiempo que le falta para terminar el recorrido
-            self.tiempo_restante = self.fin_recorrido - reloj
+            self.tiempo_restante = round(self.fin_recorrido - reloj, 4)
 
     def desbloquear_recorrido(self, reloj):
         """Desbloquea el lote registrando su nuevo fin de recorrido"""
