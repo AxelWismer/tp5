@@ -109,7 +109,7 @@ class Lote:
         """Desbloquea el lote registrando su nuevo fin de recorrido"""
         self.bloqueado = False
         if not self.cola:
-            self.fin_recorrido = reloj + self.tiempo_restante
+            self.fin_recorrido = round(reloj + self.tiempo_restante, 4)
             self.tiempo_restante = 0
 
 if __name__ == '__main__':

@@ -265,7 +265,7 @@ class Iteracion:
                 self.evento = "bloqueo"
                 self.reloj = self.inicio_purga
             # Desbloquear servidor
-            elif 0 < self.fin_purga < self.proxima_llegada and self.fin_purga < lote_proximo.fin_recorrido \
+            elif 0 < self.fin_purga <= self.proxima_llegada and self.fin_purga <= lote_proximo.fin_recorrido \
                     and self.estado_servidor != 'libre':
                 self.estado_servidor = 'libre'
                 self.evento = "desbloqueo"
